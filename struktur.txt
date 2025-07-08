@@ -1,0 +1,19 @@
+my-app/
+├── android/             # Proyek Android (otomatis dibuat)
+├── ios/                 # Proyek iOS (otomatis dibuat)
+├── assets/              # Gambar, font, ikon, dan media lainnya
+│   ├── images/
+│   ├── fonts/
+├── src/                 # Semua source code
+│   ├── components/      # Komponen UI yang dapat digunakan ulang
+│   ├── screens/         # Setiap halaman atau layar aplikasi
+│   ├── navigation/      # Konfigurasi navigasi (React Navigation)
+│   ├── services/        # API calls atau integrasi layanan
+│   ├── store/           # State management (Redux, Zustand, dsb)
+│   ├── utils/           # Helper functions, formatter, validator
+│   ├── hooks/           # Custom React hooks
+│   ├── constants/       # Konstanta global, seperti warna, ukuran font
+│   └── App.tsx          # Entry point React Native
+├── .env                 # Konfigurasi environment
+├── package.json         # Dependensi dan script
+└── babel.config.js      # Konfigurasi Babel
