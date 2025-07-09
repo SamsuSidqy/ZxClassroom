@@ -34,7 +34,7 @@ export default function LoginComponent({}){
 				<Image
 				w={300}
 				h={300}
-				source={require('../utils/icon3.png')}
+				source={require('../utils/icon4.png')}
 				/>
 			</Div>
 
@@ -56,6 +56,7 @@ export default function LoginComponent({}){
 				>
 				<Div
 				borderWidth={1}
+				borderColor="#3400e9"
 				px={120}
 				py={10}
 				rounded={10}
@@ -123,6 +124,14 @@ export default function LoginComponent({}){
 			    <Text fontSize={18} color="#fff" >Login</Text>
 			  </Button>
 
+			  <Div row alignItems="center">
+			  <Div flex={1} height={5} bg="gray200" />
+			  <Text mx="md" fontSize="sm" color="gray700">
+			    ZX ClassRoom
+			  </Text>
+			  <Div flex={1} height={5} bg="gray200" />
+			  </Div>
+
 			  </Div>			  
 			</Dropdown>
 
@@ -140,6 +149,52 @@ export default function LoginComponent({}){
 			  showSwipeIndicator={true}
 			  roundedTop="xl">
 			  
+			  <Div mx={20} my={10} gap={30}>
+
+			  <Input
+				  placeholder="Username / Email"
+				  p={10}
+				  focusBorderColor="#08009f"
+				  prefix={<Icon name="elderly" size={20} />}
+			  />
+
+			  <Input
+				  placeholder="Password"
+				  p={10}
+				  focusBorderColor="#08009f"
+				  prefix={<Icon name="lock" size={20} />}
+				  suffix={<Icon name="key" size={20} />}
+			  />
+			  <Input
+				  placeholder="Confirm Password"
+				  p={10}
+				  focusBorderColor="#08009f"
+				  prefix={<Icon name="lock" size={20} />}
+				  suffix={<Icon name="key" size={20} />}
+			  />
+
+			  <Button
+			  	w="100%"			   
+			    bg="#08009f"
+			    color="white"
+			    underlayColor="#c0aee0"
+			    rounded={7}
+			  >
+			    <Text fontSize={18} color="#fff" >Register</Text>
+			  </Button>
+
+			  <Div row alignItems="center">
+			  <Div flex={1} height={5} bg="gray200" />
+			  <Text mx="md" fontSize="sm" color="gray700">
+			    ZX ClassRoom
+			  </Text>
+			  <Div flex={1} height={5} bg="gray200" />
+			  </Div>
+
+			  </Div>	
+
+
+
 			</Dropdown>
 
 

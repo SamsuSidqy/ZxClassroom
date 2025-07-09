@@ -1,12 +1,50 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { ScrollView, TouchableOpacity, View, Dimensions, ImageBackground } from "react-native";
 import { Div, Text, Button, Row, Dropdown } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { pick, types } from '@react-native-documents/picker';
 
 import LampiranComponent from "../../component/LampiranComponent";
 
 const AssigsmentScreens = () => {
     const dropdownRef = useRef();
+
+    const [lampiran,setLampiran] = useState([]);
+
+
+    // Ambil File PDF
+    const getFiles = async() => {
+        try {
+            const pdfResults = await pick({
+                 type: [types.pdf,types.images],
+                 allowMultiSelection:true
+            })
+            setLampiran(Items => [...Items, ...pdfResults]);
+          } catch (err) {
+
+          }
+    }
+
+    const updateFiles = async(index) => {
+        try {
+            const pdfResults = await pick({
+                 type: [types.pdf,types.images],
+            })
+            setLampiran((prevItems => {
+              const updatedItems = [...prevItems] 
+              updatedItems[index] = pdfResults[0]     
+              return updatedItems;                
+            }))
+
+          } catch (err) {
+
+          }
+    }
+
+    // Delete Lampiran
+    const deleteLampiranAtIndex = (indexToDelete) => {
+      setLampiran(prev => prev.filter((_, index) => index !== indexToDelete));
+    };
 
     return (
         <Div flex={1} bg="white">
@@ -49,6 +87,7 @@ const AssigsmentScreens = () => {
             <Dropdown
                 ref={dropdownRef}
                 h="100%"
+                w="100%"
                 maxHeight="100%"
                 title={
                     <Text mx="xl" color="gray500" pb="md">
@@ -62,11 +101,27 @@ const AssigsmentScreens = () => {
                     <Button mt="lg" w="100%" bg="green700" color="white" suffix={<Icon style={{ marginLeft: 10 }} color="#fff" name="recycling" size={20} />}>
                         Serahkan
                     </Button>
-                    <Button mt="lg" w="100%" bg="gray100" color="black" suffix={<Icon style={{ marginLeft: 10 }} color="black" name="cloud-upload" size={20} />}>
+                    <Button onPress={getFiles} mt="lg" w="100%" bg="gray100" color="black" suffix={<Icon style={{ marginLeft: 10 }} color="black" name="cloud-upload" size={20} />}>
                         Upload Tugas
                     </Button>
                 </Div>
-                <LampiranComponent />
+                <Div
+                row
+                  flexWrap="wrap"
+                  w="90%"
+                  mx="xl"
+                  rounded="xl"
+                  bg="white"
+                  overflow="hidden"
+                  alignSelf="center" gap={10}
+                >
+                {lampiran.map((data,index) => <LampiranComponent datas={data} btn={
+                    <>
+                    <Icon onPress={() => deleteLampiranAtIndex(index)} name="delete" size={20} />
+                    <Icon onPress={() => updateFiles(index)} name="attach-file" size={20} />
+                    </>
+                } />)}
+                </Div>
             </Dropdown>
         </Div>
     );

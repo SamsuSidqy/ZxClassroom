@@ -3,7 +3,7 @@ import { Div, Text, Image } from 'react-native-magnus';
 import {TouchableOpacity} from 'react-native';
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const HeaderUserComponent = ({ username, onMenuPress, profileImage,settings }) => {
+const HeaderUserComponent = ({ username, onMenuPress, profileImage,settings,chat}) => {
   return (
     <Div
       row
@@ -18,12 +18,12 @@ const HeaderUserComponent = ({ username, onMenuPress, profileImage,settings }) =
       <Div row alignItems="center">
         <TouchableOpacity onPress={onMenuPress}>
         <Icon
-          name="dehaze"
+          name="space-dashboard"
           size={25}
           color="black"
         />
         </TouchableOpacity>
-        <Text p={15} fontSize="lg" fontWeight="bold">{username}</Text>
+        <Text p={15} fontSize="lg" fontWeight="bold">Hello, {username} !!</Text>
       </Div>
 
       {/* Kanan: Profile Pic */}
@@ -37,6 +37,7 @@ const HeaderUserComponent = ({ username, onMenuPress, profileImage,settings }) =
           borderColor="gray200"
         />
         {settings}
+        {chat}
       </Div>
     </Div>
   );

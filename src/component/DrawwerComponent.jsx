@@ -1,11 +1,13 @@
 import React, { useRef } from 'react';
 import { View, TouchableHighlight } from 'react-native';
-import { Drawer, Button, Badge, Div, Text, Icon } from 'react-native-magnus';
+import { Drawer,
+  Image, 
+  Button, Badge, Div, Text, Icon } from 'react-native-magnus';
 import { useNavigation } from '@react-navigation/native';
 
 import HeaderUserComponent from './HeaderHomeComponent';
 
-export default function DrawwerComponent  ({setings}) {
+export default function DrawwerComponent  ({setings,chat}) {
   const drawerRef = useRef();
   const nav = useNavigation();
   const menuItems = [
@@ -17,22 +19,24 @@ export default function DrawwerComponent  ({setings}) {
   ];
 
   return (
-    <View style={{ paddingTop:40,}}>
+    <View style={{ }}>
      
       <HeaderUserComponent     
       profileImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFZEjaNca5sYZ3-ZGm3cQH4qOAInQGJvYk1w&s" 
       username="doni"
       onMenuPress={() => drawerRef.current.open()}
       settings={setings}
+      chat={chat}
       />      
 
 
-      <Drawer ref={drawerRef} side="left" h="100%" w="70%" bg="white">
-        <Div pt={20}  px="lg">
-         <Text  fontWeight="bold" fontSize="4xl" mt={30} mb={20}>
-            ZX Classroom
-          </Text>
-
+      <Drawer ref={drawerRef} side="right" h="100%" w="70%" bg="white" roundedRight={20} >
+        <Div pt={10}  px="lg">          
+          <Image 
+          w={50}
+          h={50}
+          source={require('../utils/logo.png')}/>
+          <Div borderWidth={0.3} borderColor="#6f8a9e" />
           <Button
               block
               bg="transparent"

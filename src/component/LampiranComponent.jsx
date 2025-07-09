@@ -1,57 +1,45 @@
-import React, { useRef } from "react";
-import { ScrollView, View, Dimensions,ImageBackground } from "react-native";
-import { Div, Text, Button, Dropdown,  } from "react-native-magnus";
+import React from "react";
+import { ImageBackground, TouchableOpacity } from "react-native";
+import { Div } from "react-native-magnus";
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { viewDocument } from '@react-native-documents/viewer';
 
-export default function LampiranComponent(){
-	return(
-		<Div
-          row
-          flexWrap="wrap"
-          w="90%"
-          mx="xl"
-          rounded="xl"
-          bg="white"
-          overflow="hidden"
-          alignSelf="center"
-          
-        >
-          {/* Kolom kiri - PDF */}
-          <Div w="48%" mb="md" mr="4%">
-            <Div h={150} justifyContent="center" alignItems="center" bg="gray100" rounded="md" shadow="md">
-              <Text fontSize="2xl" fontWeight="bold" color="gray800">
-                PDF
-              </Text>
-            </Div>
-            <Text mt="sm" fontSize="md" textAlign="center" color="gray700">
-              Ini adalah file PDF
-            </Text>
-          </Div>
+export default function LampiranComponent({ datas ,btn}) {
+  const isPdf = datas.type === "application/pdf";
 
-          {/* Kolom kanan - Gambar */}
-          <Div w="48%" mb="md">
-            <Div h={150} rounded="md" overflow="hidden" shadow="md">
-              <ImageBackground
-                source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw7Ruc3aDfDuCbY_FFQ-23U1on7qndeh-dNw&s' }}
-                style={{ flex: 1 }}
-                resizeMode="cover"
-              />
-            </Div>
-            <Text mt="sm" fontSize="md" textAlign="center" color="gray700">
-              Gambar Contoh
-            </Text>
+  return (
+    <Div w="48%" mb="md">
+      {isPdf ? (
+        <>
+          <TouchableOpacity
+          onPress={() => viewDocument({ uri: datas.uri, mimeType: datas.type }).catch((er) => console.log(er))}
+          >
+          <Div h={150} justifyContent="center" alignItems="center" bg="gray100" rounded="md" shadow="md">
+            <Icon name="picture-as-pdf" size={30} />
           </Div>
-
-          {/* Kolom ketiga */}
-          <Div w="48%" mb="md" mr="4%">
-            <Div h={150} justifyContent="center" alignItems="center" bg="gray200" rounded="md" shadow="md">
-              <Text fontSize="2xl" fontWeight="bold" color="gray800">
-                Kolom 3
-              </Text>
-            </Div>
-            <Text mt="sm" fontSize="md" textAlign="center" color="gray700">
-              Informasi tambahan
-            </Text>
+          </TouchableOpacity>
+          <Div row mt="sm" justifyContent="space-evenly" alignItems="center" color="gray700">
+            {btn}
           </Div>
-        </Div>
-	)
+        </>
+      ) : (
+        <>
+          <TouchableOpacity
+          onPress={() => viewDocument({ uri: datas.uri, mimeType: datas.type }).catch((er) => console.log(er))}
+          >
+          <Div h={150} rounded="md" overflow="hidden" shadow="md">
+            <ImageBackground
+              source={{ uri:datas.uri }}
+              style={{ flex: 1 }}
+              resizeMode="cover"
+            />
+          </Div>
+          </TouchableOpacity>
+          <Div row mt="sm" justifyContent="space-evenly" alignItems="center" color="gray700">
+            {btn}
+          </Div>
+        </>
+      )}
+    </Div>
+  );
 }

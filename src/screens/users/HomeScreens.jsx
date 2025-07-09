@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import {Button} from 'react-native-magnus'
 import DrawwerComponent from '../../component/DrawwerComponent';
 import FabHome from '../../component/FabHome';
 import ContentHomeComponent from '../../component/ContentHomeComponent';
@@ -70,7 +71,7 @@ export default function HomeScreens() {
   const nav = useNavigation();
   return (
     <>
-    <DrawwerComponent/>
+    <DrawwerComponent />
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />      
       <FlatList
@@ -82,7 +83,9 @@ export default function HomeScreens() {
       />
 
     </SafeAreaView>
-      <FabHome />
+      <FabHome 
+      btnCreate={<Button w="100%">Buat Kelas</Button>}
+      btnJoin={<Button w="100%">Join Kelas</Button>} />
     </>
   );
 }

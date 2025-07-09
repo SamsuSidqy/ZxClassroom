@@ -19,7 +19,7 @@ export default function CreateAnnounchments(){
 	const getFilesPDF = async() => {
 		try {
 	        const pdfResults = await pick({
-	        	 type: [types.pdf],
+	        	 type: [types.pdf,types.images],
 	        	 allowMultiSelection:true
 	        })
 	        setLampiran(Items => [...Items, ...pdfResults]);
@@ -28,17 +28,7 @@ export default function CreateAnnounchments(){
 	      }
 	}
 
-	// Ambil File IMAGE
-	const getFilesIMAGE = async() => {
-		try {
-	        const imageResults = await pick({	        	 
-	        	 allowMultiSelection:true
-	        })
-	        setLampiran(Items => [...Items, ...imageResults]);
-	      } catch (err) {
-
-	      }
-	}
+	
 
 	// Delete Lampiran
 	const deleteLampiranAtIndex = (indexToDelete) => {
@@ -97,24 +87,13 @@ export default function CreateAnnounchments(){
 						    <Icon name="attachment" size={15} />
 						  </Button>
 
-						  <Button
-						    bg="white"
-						    borderless
-						    shadow="sm"
-						    h={40}
-						    w={40}
-						    rounded="circle"
-						    alignSelf="center"
-						    onPress={getFilesIMAGE}
-						  >
-						    <Icon name="photo-camera-back" size={15} />
-						  </Button>
+						 
 					</Div>
 
 					<Div gap={5}>
 						{lampiran.map((data,index) => (
 							<Div key={index}  w="100%" gap={5} row justifyContent="space-between" alignItems="center" mt="xl">
-							  <Text color="#349eeb">{data.name}</Text>
+							  <Text color="#349eeb">{data.name.length > 25 ? `${data.name.substring(0,25)}...` : data.name}</Text>
 							  <Div gap={15} row justifyContent="space-between">
 
 							  	  <TouchableOpacity onPress={() => deleteLampiranAtIndex(index)}>

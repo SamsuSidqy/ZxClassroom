@@ -1,8 +1,8 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import { Div, Text, Icon } from "react-native-magnus";
+import { Div, Text } from "react-native-magnus";
 import { useNavigation } from '@react-navigation/native';
-
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import FabClass from './FabClass';
 
@@ -10,8 +10,8 @@ export default function NavigationBottomClass({ aktif, setAktif }) {
   const navigation = useNavigation();
 
   const navItems = [
-    { key: 'forum', label: 'Forum', icon: 'message-square' },
-    { key: 'orang', label: 'Orang', icon: 'users' },
+    { key: 'forum', label: 'Tugas', icon: 'event-note' },
+    { key: 'orang', label: 'Orang', icon: 'people' },
   ];
 
   return (
@@ -35,12 +35,12 @@ export default function NavigationBottomClass({ aktif, setAktif }) {
           <TouchableOpacity key={item.key} onPress={() => setAktif(item.key)}>
             <Div alignItems="center">
               <Icon
-                fontSize={20}
+                size={20}
                 name={item.icon}
                 fontFamily="Feather"
-                color={aktif === item.key ? 'blue700' : 'gray500'}
+                color={aktif === item.key ? '#26aec9' : '#243538'}
               />
-              <Text fontSize="xs" color={aktif === item.key ? 'blue700' : 'gray600'}>
+              <Text fontSize="xs" color={aktif === item.key ? '#26aec9' : '#243538'}>
                 {item.label}
               </Text>
             </Div>

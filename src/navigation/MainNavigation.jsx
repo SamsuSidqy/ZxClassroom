@@ -21,7 +21,7 @@ export default function MainNavigation() {
       	<Stack.Screen options={{headerShown: false}} name="Class" component={ClassroomScreen} />
       	<Stack.Screen options={{headerShown: true}} name="Assigsment" component={AssigsmentScreens} />
         <Stack.Screen options={{headerShown: false}} name="CreateTask" component={CreateTask} />
-        <Stack.Screen options={{headerShown: false}} name="MyClass" component={MyClassScreens} />
+        <Stack.Screen options={{headerShown: false}} name="MyAssigsment" component={MyClassScreens} />
         <Stack.Screen options={{headerShown: false}} name="SettingsClass" component={SettingsClassScreens} />
         <Stack.Screen options={{headerShown: false}} name="CreateAnnounch" component={CreateAnnounchments} />
        	<Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreens} />

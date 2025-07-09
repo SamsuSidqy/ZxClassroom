@@ -10,32 +10,26 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import {Div} from 'react-native-magnus'
+import {Div, Image} from 'react-native-magnus'
 
 import { useNavigation } from '@react-navigation/native';
 
 
-export default function ContentHomeComponent({item}){
+export default function ContentHomeComponent({ item }) {
   const nav = useNavigation();
-  return(
-    <>
-     <TouchableOpacity onPress={() => nav.navigate('Class')} >
-          <ImageBackground
-            source={{ uri: item.image }}
-            imageStyle={styles.cardImage}
-            style={styles.card}
-          >
-            <View style={styles.overlay} />
-            <View style={styles.cardContent}>
-              <Text style={styles.title}>{item.title}</Text>
-              {item.time !== '' && <Text style={styles.time}>{item.time}</Text>}
-              <Text style={styles.lecturer}>{item.lecturer}</Text>
-              {item.note && <Text style={styles.note}>{item.note}</Text>}
-            </View>
-          </ImageBackground>
-          </TouchableOpacity>
-    </>
-  )
+  return (
+    <TouchableOpacity style={{ marginTop: 10 }} onPress={() => nav.navigate('Class')}>
+      <View style={[styles.card, { backgroundColor: '#4B7BE5', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 }]}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.title}>{item.title}</Text>
+          {item.time !== '' && <Text style={styles.time}>{item.time}</Text>}
+          <Text style={styles.lecturer}>{item.lecturer}</Text>
+          {item.note && <Text style={styles.note}>{item.note}</Text>}
+        </View>
+        <Image source={require('../utils/icon_home.png')} w={100} h={100} />
+      </View>
+    </TouchableOpacity>
+  );
 }
 const { width } = Dimensions.get('window');
 

@@ -115,7 +115,7 @@ export default function CreateTask(){
 					<Div gap={5}>
 						{lampiran.map((data,index) => (
 							<Div key={index}  w="100%" gap={5} row justifyContent="space-between" alignItems="center" mt="xl">
-							  <Text color="#349eeb">{data.name}</Text>
+							  <Text color="#349eeb">{data.name.length > 25 ? `${data.name.substring(0,25)}...` : data.name}</Text>
 							  <Div gap={15} row justifyContent="space-between">
 
 							  	  <TouchableOpacity onPress={() => deleteLampiranAtIndex(index)}>
