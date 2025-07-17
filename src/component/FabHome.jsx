@@ -150,7 +150,7 @@ export default function FabHome({btnJoin,btnCreate}) {
               prefix={<Icon name="assistant" size={20} />}
             />
             <Input
-              placeholder="Deskripsi Kelas"
+              placeholder="Mata Pelajaran"
               p={10}
               focusBorderColor="#08009f"
               prefix={<Icon name="campaign" size={20} />}

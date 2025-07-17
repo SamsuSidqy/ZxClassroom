@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -13,18 +13,30 @@ import SettingsClassScreens from '../screens/users/SettingsClassScreens';
 
 const Stack = createNativeStackNavigator();
 
+
+import {AuthProvider, AuthContext} from '../provider/ProviderService'
+
 export default function MainNavigation() {
+  const { authentication } = useContext(AuthContext);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-      	<Stack.Screen options={{headerShown: false}} name="Home" component={HomeScreens} />
-      	<Stack.Screen options={{headerShown: false}} name="Class" component={ClassroomScreen} />
-      	<Stack.Screen options={{headerShown: true}} name="Assigsment" component={AssigsmentScreens} />
-        <Stack.Screen options={{headerShown: false}} name="CreateTask" component={CreateTask} />
-        <Stack.Screen options={{headerShown: false}} name="MyAssigsment" component={MyClassScreens} />
-        <Stack.Screen options={{headerShown: false}} name="SettingsClass" component={SettingsClassScreens} />
-        <Stack.Screen options={{headerShown: false}} name="CreateAnnounch" component={CreateAnnounchments} />
-       	<Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreens} />
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!authentication ? (
+          // Jika belum autentikasi, tampilkan hanya halaman login
+          <Stack.Screen name="Login" component={LoginScreens} />
+        ) : (
+          // Jika sudah autentikasi, tampilkan semua halaman lainnya
+          <>
+            <Stack.Screen name="Home" component={HomeScreens} />
+            <Stack.Screen name="Class" component={ClassroomScreen} />
+            <Stack.Screen name="Assigsment" component={AssigsmentScreens} options={{ headerShown: true }} />
+            <Stack.Screen name="CreateTask" component={CreateTask} />
+            <Stack.Screen name="MyAssigsment" component={MyClassScreens} />
+            <Stack.Screen name="SettingsClass" component={SettingsClassScreens} />
+            <Stack.Screen name="CreateAnnounch" component={CreateAnnounchments} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

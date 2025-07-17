@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { View, TouchableHighlight } from 'react-native';
 import { Drawer,
   Image, 
   Button, Badge, Div, Text, Icon } from 'react-native-magnus';
+import {AuthProvider, AuthContext} from '../provider/ProviderService'
 import { useNavigation } from '@react-navigation/native';
 
 import HeaderUserComponent from './HeaderHomeComponent';
@@ -10,6 +11,7 @@ import HeaderUserComponent from './HeaderHomeComponent';
 export default function DrawwerComponent  ({setings,chat}) {
   const drawerRef = useRef();
   const nav = useNavigation();
+  const { logoutUser } = useContext(AuthContext);
   const menuItems = [
     { label: 'Home', icon: 'home' },
     { label: 'Notification', icon: 'notifications' },
@@ -17,6 +19,14 @@ export default function DrawwerComponent  ({setings,chat}) {
     { label: 'About App', icon:'info'},
     { label: 'Logout', icon: 'highlight-off' },
   ];
+
+  const handleLogout = async () => {
+    const result = await logoutUser()
+    console.log(result)
+    if (result) {
+      nav.navigate('Login')
+    }
+  }
 
   return (
     <View style={{ }}>
@@ -117,6 +127,7 @@ export default function DrawwerComponent  ({setings,chat}) {
               bg="transparent"
               justifyContent="flex-start"
               py="md"
+              onPress={handleLogout}
               prefix={
                 <Icon
                   name="highlight-off"
