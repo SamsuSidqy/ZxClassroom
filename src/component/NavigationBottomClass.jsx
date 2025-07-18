@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 import FabClass from './FabClass';
 
-export default function NavigationBottomClass({ aktif, setAktif }) {
+export default function NavigationBottomClass({ aktif, setAktif, teacher, data }) {
   const navigation = useNavigation();
 
   const navItems = [
@@ -16,7 +16,7 @@ export default function NavigationBottomClass({ aktif, setAktif }) {
 
   return (
     <>
-      {aktif != "orang" ? <FabClass /> : null}
+      {aktif != "orang" && teacher > 0 ? <FabClass item={data} /> : null}
 
       <Div
         row

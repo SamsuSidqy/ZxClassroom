@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
 import { Div, Text, Input, Button } from "react-native-magnus";
 import { useNavigation } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/MaterialIcons";
+
+import {AuthProvider, AuthContext} from '../provider/ProviderService'
 
 export default function FabHome({btnJoin,btnCreate}) {
   const nav = useNavigation();
@@ -10,9 +12,37 @@ export default function FabHome({btnJoin,btnCreate}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCreateClass,setModalCreateClass] = useState(false)
 
+  const [namaKelas,setNamaKelas] = useState('')
+  const [mataPelajaran,setMataPelajaran] = useState('')
+  const [kodeKelas,setKodeKelas] = useState('')
+
+  const { BuatKelas, IkutKelas } = useContext(AuthContext);
+
   const handleFabPress = () => {
     setShowOptions(!showOptions);
   };
+
+  const HandleBuatKelas = async() => {
+    const data = {
+      nama_kelas:namaKelas,
+      mata_pelajaran:mataPelajaran
+    }
+    const result = await BuatKelas(data)
+    if (result.status) {
+      nav.navigate('Class',result.data.kelas)
+    }
+  }
+
+  const HandleIkutKelas = async() => {
+    const data = {
+      kode_kelas:kodeKelas,
+    }
+    const result = await IkutKelas(data)
+    console.log(result)
+    if (result.status) {
+      nav.navigate('Class',result.data.kelas)
+    }
+  }
 
   return (
     <>
@@ -105,11 +135,15 @@ export default function FabHome({btnJoin,btnCreate}) {
             >
             <Input
               placeholder="Kode Kelas"
+              onChangeText={setKodeKelas}
+              value={kodeKelas}
               p={10}
               focusBorderColor="#08009f"
               prefix={<Icon name="class" size={20} />}
             />
-            {btnJoin}
+            <Button 
+            disabled={kodeKelas.length ? false : true}
+            onPress={HandleIkutKelas} w="100%">Join Kelas</Button>
             </Div>
           </TouchableWithoutFeedback>
         </Div>
@@ -145,17 +179,22 @@ export default function FabHome({btnJoin,btnCreate}) {
             >
             <Input
               placeholder="Nama Kelas"
+              onChangeText={setNamaKelas}
+              value={namaKelas}
               p={10}
               focusBorderColor="#08009f"
               prefix={<Icon name="assistant" size={20} />}
             />
             <Input
               placeholder="Mata Pelajaran"
+              onChangeText={setMataPelajaran}
+              value={mataPelajaran}
               p={10}
               focusBorderColor="#08009f"
               prefix={<Icon name="campaign" size={20} />}
             />
-            {btnCreate}
+            <Button 
+            disabled={mataPelajaran.length && namaKelas.length ? false : true} onPress={HandleBuatKelas} w="100%">Buat Kelas</Button>
             </Div>
           </TouchableWithoutFeedback>
         </Div>

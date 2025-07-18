@@ -3,11 +3,11 @@ import { TouchableOpacity } from "react-native";
 import { Div, Text, Icon } from "react-native-magnus";
 import { useNavigation } from '@react-navigation/native';
 
-export default function FabClass(){
+export default function FabClass({item}){
   const nav = useNavigation();
 	return(
 	 <TouchableOpacity
-   onPress={() => nav.navigate('CreateTask')}
+   onPress={() => nav.navigate('CreateTask',{kode_kelas:item.kode_kelas})}
         style={{
           position: 'absolute',
           bottom: 80, 

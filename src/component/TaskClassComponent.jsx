@@ -4,15 +4,15 @@ import { Div, Button, Text, Icon } from "react-native-magnus";
 
 import { useNavigation } from '@react-navigation/native';
 
-export default function TaskClassComponent(){
+export default function TaskClassComponent({data,kelas,teacher}){
 	const nav = useNavigation();
 	return(
 		<Div>
 			<Div bg="teal600" mx={20} p="lg" rounded="xl" m="md">
 	          <Text color="white" fontSize="xl" fontWeight="bold">
-	            IMK R6Q Genap 24 25
+	            {kelas.nama_kelas}
 	          </Text>
-	          <Text color="white">IMK R6Q Genap 24 25</Text>
+	          <Text color="white">{kelas.mata_pelajaran}</Text>
 	        </Div>
 
 	        {/* Pengumuman */}
@@ -24,6 +24,7 @@ export default function TaskClassComponent(){
 	          row
 	          alignItems="center"
 	        >
+	         {teacher ? (
 	          <Button
 	            block
 	            onPress={() => nav.navigate('CreateAnnounch')}
@@ -43,76 +44,16 @@ export default function TaskClassComponent(){
 	            mt="lg">
 	            Buat Pengumuman
 	          </Button>
+	         ):null}
 	        </Div>
 
 	        {/* Tugas Cards */}
-	        {[
-	          {
-	            title: "Tugas baru: Tugas pertemuan 14",
-	            date: "23 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas Pertemuan 13 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: tugas pertemuan 12 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas pertemuan 14",
-	            date: "23 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas Pertemuan 13 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: tugas pertemuan 12 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas pertemuan 14",
-	            date: "23 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas Pertemuan 13 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: tugas pertemuan 12 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas pertemuan 14",
-	            date: "23 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas Pertemuan 13 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: tugas pertemuan 12 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas pertemuan 14",
-	            date: "23 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Tugas Pertemuan 13 IMK",
-	            date: "16 Jun",
-	          },
-	          {
-	            title: "Tugas baru: Wong Jwooo",
-	            date: "16 Jun",
-	          },
-	        ].map((task, index) => (
+	        {data.map((task, index) => (
 	          <TouchableOpacity
 	           style={{
 	            paddingVertical:5
 	           }}
-	           onPress={() => nav.navigate('Assigsment')}>
+	           onPress={() => nav.navigate(teacher ? 'MyAssigsment' : 'Assigsment')}>
 	          <Div
 	            key={index}
 	            bg="white"
@@ -131,8 +72,8 @@ export default function TaskClassComponent(){
 	                mr="md"
 	              />
 	              <Div>
-	                <Text fontWeight="bold">{task.title}</Text>
-	                <Text color="gray600">{task.date}</Text>
+	                <Text fontWeight="bold">{task.judul}</Text>
+	                <Text color="gray600">{task.tenggat_waktu ? data.tenggat_waktu : "Tidak Ada Tenggat Waktu"}</Text>
 	                {/*<Text color="blue500" mt="sm">
 	                  Tambahkan komentar kelas
 	                </Text>*/}

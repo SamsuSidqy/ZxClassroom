@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { Div, Button, Text, Dropdown, Input } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -10,9 +10,20 @@ import { useNavigation } from '@react-navigation/native';
 import HeaderTaskComponent from '../../component/HeaderTaskComponent';
 import LampiranComponent from '../../component/LampiranComponent';
 
-export default function CreateTask(){
+
+import {AuthProvider, AuthContext} from '../../provider/ProviderService'
+
+export default function CreateTask({route}){
 	const [dates,setDates] = useState('')
 	const [lampiran,setLampiran] = useState([]);
+
+	const { BuatTugas } = useContext(AuthContext);
+
+	const [tenggat,setTenggat] = useState('')
+	const [judul,setJudul] = useState('')
+	const [deskripsi,setDeskripsi] = useState('')
+
+
 
 
 	// Ambil File PDF
@@ -51,14 +62,45 @@ export default function CreateTask(){
 
 	const dropdownRef = React.createRef();
 
-	const testt = () => {
-		console.log("Truee")
+	const HandleCreateTask = async() => {
+		const formData = new FormData()
+		formData.append("judul",judul)
+		formData.append("deskripsi",deskripsi)
+		formData.append("kode_kelas",route.params.kode_kelas)
+		if (tenggat.length > 0) {
+			formData.append("tenggat_waktu",tenggat)
+		}else{
+			formData.append("tenggat_waktu",null)
+		}
+
+		if(lampiran.length > 1){
+			for (const file of lampiran) {
+				formData.append("lampiran[]", {
+					uri: file.uri,
+					name: file.name,
+					type: file.type
+				});
+			}
+		}else if(lampiran.length == 1){
+			for (const file of lampiran) {
+				formData.append("lampiran", {
+					uri: file.uri,
+					name: file.name,
+					type: file.type
+				});
+			}
+		}
+		console.log(formData)
+		const results = await BuatTugas(formData)
+		console.log(results)
+
 	}
 	const nav = useNavigation();
 	return(
 		<Div bg="#fff">
 			<HeaderTaskComponent 
-			tombol={<Button onPress={testt} px={30} py={8}>Submit</Button>}
+			tombol={<Button disabled={judul.length && deskripsi.length ? false : true} onPress={HandleCreateTask} px={30} 
+			py={8}>Submit</Button>}
 			/>
 			<ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
 				<Div
@@ -68,6 +110,8 @@ export default function CreateTask(){
 				>	
 					<Input
 					  placeholder="Title"
+					  onChangeText={setJudul}
+					  value={judul}
 					  p={10}
 					  focusBorderColor="blue700"
 					  prefix={<Icon name="campaign" size={20} />}
@@ -75,6 +119,8 @@ export default function CreateTask(){
 
 					<Input
 					  placeholder="Deskripsi Tugas"
+					  onChangeText={setDeskripsi}
+					  value={deskripsi}
 					  multiline={true}
 					  p={10}
 					  focusBorderColor="blue700"
@@ -152,6 +198,9 @@ export default function CreateTask(){
 		          initialDate={dates}
 		          minDate={getTomorrowDate()}
 		          onDayPress={day => {
+		          	const date = new Date(day.timestamp);
+					const mysqlDatetime = date.toISOString().slice(0, 19).replace('T', ' ');
+					setTenggat(mysqlDatetime)
 		          	if (day.dateString == dates) {
 		          		setDates("")
 		          	}else{

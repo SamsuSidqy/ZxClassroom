@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -17,13 +17,14 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function ContentHomeComponent({ item }) {
   const nav = useNavigation();
+  
   return (
-    <TouchableOpacity style={{ marginTop: 10 }} onPress={() => nav.navigate('Class')}>
+    <TouchableOpacity style={{ marginTop: 10 }} onPress={() => nav.navigate('Class',item)}>
       <View style={[styles.card, { backgroundColor: '#4B7BE5', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 }]}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.title}>{item.title}</Text>
-          {item.time !== '' && <Text style={styles.time}>{item.time}</Text>}
-          <Text style={styles.lecturer}>{item.lecturer}</Text>
+          <Text style={styles.title}>{item.nama_kelas}</Text>
+          {item.time !== '' && <Text style={styles.time}>{item.mata_pelajaran}</Text>}
+          <Text style={styles.lecturer}>{item.deskripsi}</Text>
           {item.note && <Text style={styles.note}>{item.note}</Text>}
         </View>
         <Image source={require('../utils/icon_home.png')} w={100} h={100} />

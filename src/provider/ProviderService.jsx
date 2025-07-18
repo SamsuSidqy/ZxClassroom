@@ -4,6 +4,11 @@ const AuthContext = createContext();
 
 import registerUser from '../api/Register'
 import loginUsers from '../api/LoginAuth'
+import ListKelas from '../api/ListKelas'
+import ListTugas from '../api/ListTugas'
+import CreateKelas from '../api/CreateKelas'
+import JoinKelas from '../api/JoinKelas'
+import CreateTugas from '../api/CreateTugas'
 
 function AuthProvider({ children }) {
 
@@ -76,6 +81,62 @@ function AuthProvider({ children }) {
         }
     };
 
+    const ListKelasData = async () => {
+    	try{
+    		const storedUser = await AsyncStorage.getItem('acounts');
+        	const userObj = storedUser ? JSON.parse(storedUser) : {};
+
+        	const result = await ListKelas(userObj.token,userObj.refresh_token)
+        	return result
+    	}catch(er){
+    		return false
+    	}
+    }
+
+    const ListTugasData = async(id_kelas) => {
+    	try{
+    		const storedUser = await AsyncStorage.getItem('acounts');
+        	const userObj = storedUser ? JSON.parse(storedUser) : {};
+    		const result = await ListTugas(userObj.token,userObj.refresh_token,id_kelas)
+    		return result
+    	}catch(er){
+    		return false
+    	}
+    }
+
+    const BuatKelas = async(data) => {
+    	try{
+    		const storedUser = await AsyncStorage.getItem('acounts');
+        	const userObj = storedUser ? JSON.parse(storedUser) : {};
+    		const result = await CreateKelas(userObj.token,userObj.refresh_token,data)
+    		return result
+    	}catch(er){
+    		console.log(false)
+    	}
+    }
+
+    const IkutKelas = async(data) => {
+    	try{
+    		const storedUser = await AsyncStorage.getItem('acounts');
+        	const userObj = storedUser ? JSON.parse(storedUser) : {};
+    		const result = await JoinKelas(userObj.token,userObj.refresh_token,data)
+    		return result
+    	}catch(er){
+    		console.log(false)
+    	}
+    }
+
+    const BuatTugas = async(form) => {
+    	try{
+    		const storedUser = await AsyncStorage.getItem('acounts');
+        	const userObj = storedUser ? JSON.parse(storedUser) : {};
+    		const result = await CreateTugas(userObj.token,userObj.refresh_token,form)
+    		return result
+    	}catch(er){
+    		console.log(false)
+    	}
+    }
+
     useEffect(() => {
     	checkDeviceStatus()
     	checkAuthentication()
@@ -89,7 +150,12 @@ function AuthProvider({ children }) {
                 authentication,
                 register,
                 loginUser,
-                logoutUser
+                logoutUser,
+                ListKelasData,
+                ListTugasData,
+                BuatKelas,
+                IkutKelas,
+                BuatTugas
             }}
         >
             {children}

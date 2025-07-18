@@ -1,100 +1,98 @@
-import React from 'react';
+import React, {useContext, useCallback, useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
   FlatList,
   View,
-  Text,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import {Button} from 'react-native-magnus'
+import { Button, Div, Text } from 'react-native-magnus'
+import Icon from "react-native-vector-icons/MaterialIcons";
 import DrawwerComponent from '../../component/DrawwerComponent';
 import FabHome from '../../component/FabHome';
 import ContentHomeComponent from '../../component/ContentHomeComponent';
 
 import { useNavigation } from '@react-navigation/native';
+import {AuthProvider, AuthContext} from '../../provider/ProviderService'
 
-
+import { useFocusEffect } from '@react-navigation/native';
 
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 
-const classData = [
-  {
-    id: '1',
-    title: 'R6Q - PWL (24/25)',
-    time: 'Rabu, 10.00 - 12.30',
-    lecturer: 'Fitriana Destiawati',
-    image: 'https://images.unsplash.com/photo-1502673530728-f79b4cab31b1',
-  },
-  {
-    id: '2',
-    title: 'IMK R6Q Genap 24 25',
-    time: '',
-    lecturer: 'Harry Dhika',
-    note: 'Tugas Pertemuan 13 IMK',
-    image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba',
-  },
-  {
-    id: '3',
-    title: 'ISBD - RQ',
-    time: "Jum'at, 13.00 - 15.30",
-    lecturer: 'Siti Suaedah',
-    image: 'https://images.unsplash.com/photo-1516640997890-5e4c83df8419',
-  },
-  {
-    id: '4',
-    title: 'R5Q PEMOGRAMAN WEB',
-    time: 'Rabu, 14:10 - 15:50 WIB',
-    lecturer: 'Dona Katarina',
-    image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a',
-  },
-  {
-    id: '5',
-    title: "PBO'24 - R5Q",
-    time: 'Jumat, 15.30 - 18.00 / 5.4-2',
-    lecturer: 'Forkas Tiroy Santos Butarbutar',
-    image: 'https://images.unsplash.com/photo-1453365607868-7deed8cc7d26',
-  },
-  {
-    id: '6',
-    title: 'R6Q - PWL (24/25)',
-    time: 'Rabu, 10.00 - 12.30',
-    lecturer: 'Fitriana Destiawati',
-    image: 'https://images.unsplash.com/photo-1502673530728-f79b4cab31b1',
-  },
-];
+const { width, heights } = Dimensions.get('window');
 
 export default function HomeScreens() {
   const nav = useNavigation();
+  const { ListKelasData } = useContext(AuthContext);
+  const [dataKelas,setDataKelas] = useState(null)
+  const [refresh,setRefresh] = useState(false)
+
+  const AmbilDataKelas = async () => {
+    const res = await ListKelasData()
+    if (res.status) {
+      setDataKelas(res.data.data)
+    }
+  }
+
+  const RefreshData = async () => {
+    setRefresh(true)
+    const res = await ListKelasData()
+    if (res.status) {
+      setDataKelas(res.data.data)
+    }
+    setRefresh(false)
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      if (dataKelas === null) {
+        AmbilDataKelas();
+      }
+      
+      return () => {
+        // Optional: cleanup
+      };
+    }, [dataKelas])
+  );
+
   return (
     <>
     <DrawwerComponent />
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />      
       <FlatList
-        data={classData}
+        data={dataKelas}
+        onRefresh={RefreshData}
+        refreshing={refresh}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <ContentHomeComponent item={item}/>}
+        renderItem={({ item }) => <ContentHomeComponent item={item} />}
         contentContainerStyle={{ paddingBottom: 100 }}
+        ListEmptyComponent={
+          <>
+            <Div mt="20%" gap={10} justifyContent="center" alignItems="center">
+            <Icon name="cast-for-education" size={130} color="#4B7BE5"/>
+            <Text fontSize={15} fontWeight="bold">
+            Anda Belum Mempunyai Kelas !!
+            </Text>
+            </Div>
+          </>
+        }
       />
-
     </SafeAreaView>
-      <FabHome 
-      btnCreate={<Button w="100%">Buat Kelas</Button>}
-      btnJoin={<Button w="100%">Join Kelas</Button>} />
+      <FabHome />
     </>
   );
 }
 
-const { width } = Dimensions.get('window');
+
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F5F7FA',   
+     
     paddingHorizontal: 16,
   },
   card: {

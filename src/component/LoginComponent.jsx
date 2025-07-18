@@ -41,7 +41,6 @@ export default function LoginComponent({}){
 	 	setLoading(true)
 	 	const usersData = {username,email,password}
 	 	const result = await register(usersData)
-	 	console.log(result)
 	 	if (!result.status) {
 	 		setErrors(true)
 	 		setMessage(result.error)
@@ -54,7 +53,10 @@ export default function LoginComponent({}){
 	 		setPassword('')
 	 		setUsername('')
 	 		setEmail('')
-	 		nav.navigate('Home')
+	 		setTimeout(() => {
+		 		setMessage('')
+		 		setErrors(false)
+		 	},5000)
 	 	}
 	 	setLoading(false)
 	 	
@@ -65,7 +67,6 @@ export default function LoginComponent({}){
 	 	setLoading(true)
 	 	const usersData = {username,password}
 	 	const result = await loginUser(usersData)
-	 	console.log(result)
 	 	if (!result.status) {
 	 		setErrors(true)
 	 		setMessage(result.error)
@@ -73,6 +74,7 @@ export default function LoginComponent({}){
 	 		setPassword('')
 	 		setUsername('')
 	 		setEmail('')
+	 		nav.navigate('Home')
 	 	}
 	 	setLoading(false)
 	 	setTimeout(() => {
