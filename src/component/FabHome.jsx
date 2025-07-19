@@ -179,6 +179,7 @@ export default function FabHome({btnJoin,btnCreate}) {
             >
             <Input
               placeholder="Nama Kelas"
+              maxLength={7}
               onChangeText={setNamaKelas}
               value={namaKelas}
               p={10}

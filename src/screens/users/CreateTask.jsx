@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
-import { Div, Button, Text, Dropdown, Input } from "react-native-magnus";
+import { ScrollView, TouchableOpacity, ActivityIndicator  } from "react-native";
+import { Div, Button, Text, Dropdown, Overlay, Input } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { pick, types } from '@react-native-documents/picker';
@@ -16,12 +16,14 @@ import {AuthProvider, AuthContext} from '../../provider/ProviderService'
 export default function CreateTask({route}){
 	const [dates,setDates] = useState('')
 	const [lampiran,setLampiran] = useState([]);
+	const nav = useNavigation();
 
 	const { BuatTugas } = useContext(AuthContext);
 
 	const [tenggat,setTenggat] = useState('')
 	const [judul,setJudul] = useState('')
 	const [deskripsi,setDeskripsi] = useState('')
+	const [loading,setLoading] = useState(false)
 
 
 
@@ -63,6 +65,9 @@ export default function CreateTask({route}){
 	const dropdownRef = React.createRef();
 
 	const HandleCreateTask = async() => {
+
+		setLoading(true)
+
 		const formData = new FormData()
 		formData.append("judul",judul)
 		formData.append("deskripsi",deskripsi)
@@ -73,15 +78,7 @@ export default function CreateTask({route}){
 			formData.append("tenggat_waktu",null)
 		}
 
-		if(lampiran.length > 1){
-			for (const file of lampiran) {
-				formData.append("lampiran[]", {
-					uri: file.uri,
-					name: file.name,
-					type: file.type
-				});
-			}
-		}else if(lampiran.length == 1){
+		if(lampiran.length > 0){
 			for (const file of lampiran) {
 				formData.append("lampiran", {
 					uri: file.uri,
@@ -92,12 +89,29 @@ export default function CreateTask({route}){
 		}
 		console.log(formData)
 		const results = await BuatTugas(formData)
-		console.log(results)
+		if (results.status) {
+			setLampiran([])
+			setTenggat('')
+			setJudul('')
+			setDeskripsi('')
+			setLoading(false)
+			nav.goBack()
+		}else{
+			setLampiran([])
+			setTenggat('')
+			setJudul('')
+			setDeskripsi('')
+			setLoading(false)
+		}
 
 	}
-	const nav = useNavigation();
+	
 	return(
-		<Div bg="#fff">
+		<Div flex={1} bg="#fff">
+			<Overlay visible={loading} alignItems="center" 
+			justifyContent="center" w="100%" h="100%" bg="transparent">
+			  <ActivityIndicator size="large" color="#00ff00"/>
+			</Overlay>
 			<HeaderTaskComponent 
 			tombol={<Button disabled={judul.length && deskripsi.length ? false : true} onPress={HandleCreateTask} px={30} 
 			py={8}>Submit</Button>}

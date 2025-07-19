@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
-import { Div, Button, Text, Dropdown, Input } from "react-native-magnus";
+import React, {useState, useContext} from "react";
+import { ScrollView, TouchableOpacity,ActivityIndicator } from "react-native";
+import { Div, Button, Text, Dropdown, Overlay, Input } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { pick, types } from '@react-native-documents/picker';
@@ -10,10 +10,56 @@ import { useNavigation } from '@react-navigation/native';
 import HeaderTaskComponent from '../../component/HeaderTaskComponent';
 import LampiranComponent from '../../component/LampiranComponent';
 
-export default function CreateAnnounchments(){
+import {AuthProvider, AuthContext} from '../../provider/ProviderService'
+
+
+export default function CreateAnnounchments({route}){
 	const [dates,setDates] = useState('')
 	const [lampiran,setLampiran] = useState([]);
 
+	const { BuatPengumuman } = useContext(AuthContext);
+
+	const [judul,setJudul] = useState('')
+	const [deskripsi,setDeskripsi] = useState('')
+	const [loading,setLoading] = useState(false)
+
+
+	const HandleCreateAnnounce = async() => {
+
+		setLoading(true)
+
+		const formData = new FormData()
+		formData.append("judul",judul)
+		formData.append("deskripsi",deskripsi)
+		formData.append("kode_kelas",route.params.kode_kelas)
+		
+
+		if(lampiran.length > 0){
+			for (const file of lampiran) {
+				formData.append("lampiran", {
+					uri: file.uri,
+					name: file.name,
+					type: file.type
+				});
+			}
+		}
+		console.log(formData)
+		const results = await BuatPengumuman(formData)
+		console.log()
+		if (results.status) {
+			setLampiran([])
+			setJudul('')
+			setDeskripsi('')
+			setLoading(false)
+			nav.goBack()
+		}else{
+			setLampiran([])
+			setJudul('')
+			setDeskripsi('')
+			setLoading(false)
+		}
+
+	}
 
 	// Ambil File PDF
 	const getFilesPDF = async() => {
@@ -37,14 +83,17 @@ export default function CreateAnnounchments(){
 
 
 
-	const testt = () => {
-		console.log("Truee")
-	}
 	const nav = useNavigation();
 	return(
 		<Div bg="#fff">
+			<Overlay visible={loading} alignItems="center" 
+			justifyContent="center" w="100%" h="100%" bg="transparent">
+			  <ActivityIndicator size="large" color="#00ff00"/>
+			</Overlay>
 			<HeaderTaskComponent 
-			tombol={<Button onPress={testt} px={30} py={8}>Submit</Button>}
+			tombol={<Button 
+				disabled={judul.length && deskripsi.length ? false : true}
+				onPress={HandleCreateAnnounce} px={30} py={8}>Submit</Button>}
 			/>
 			<ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
 				<Div
@@ -54,6 +103,8 @@ export default function CreateAnnounchments(){
 				>	
 					<Input
 					  placeholder="Title"
+					  onChangeText={setJudul}
+					  value={judul}
 					  p={10}
 					  focusBorderColor="blue700"
 					  prefix={<Icon name="campaign" size={20} />}
@@ -62,17 +113,14 @@ export default function CreateAnnounchments(){
 					<Input
 					  placeholder="Deskripsi Pengumuman"
 					  multiline={true}
+					  onChangeText={setDeskripsi}
+					  value={deskripsi}
 					  p={10}
 					  focusBorderColor="blue700"
 					  prefix={<Icon name="dashboard" size={20} />}
 					/>
 
 					
-
-
-
-					
-
 					<Div gap={10} row justifyContent="flex-start" alignItems="center" mt="xl">
 						<Button
 						    bg="white"

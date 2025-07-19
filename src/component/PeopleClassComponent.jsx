@@ -1,100 +1,38 @@
-import React,{useState} from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
-import { Div, Avatar, Button, Text } from "react-native-magnus";
+import React from "react";
+import { ScrollView } from "react-native";
+import { Div, Avatar, Text } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
+export default function PeopleClassComponent({ data }) {
+  const teachers = data.filter(person => person.teacher);
+  const students = data.filter(person => !person.teacher);
 
-export default function PeopleClassComponent(){
-	return(
-		<ScrollView>
-		<Div mx={20} my={15} gap={10}>
-			<Div gap={10}>
-				<Text fontSize={18}>Pengajar</Text>
-				<Div w="100%" borderColor="#1a1919" borderWidth={0.2} />
-			</Div>
+  const renderPerson = (person, index) => (
+    <Div key={index} row justifyContent="flex-start" gap={10} alignItems="center">
+      <Avatar bg="green800">
+        <Icon name="dashboard" />
+      </Avatar>
+      <Text fontSize={15}>{person.username}</Text>
+    </Div>
+  );
 
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Siti Jubaedah</Text>
-			</Div>
+  return (
+    <ScrollView>
+      <Div mx={20} my={15} gap={10}>
+        {/* Bagian Pengajar */}
+        <Div gap={10}>
+          <Text fontSize={18}>Pengajar</Text>
+          <Div w="100%" borderColor="#1a1919" borderWidth={0.2} />
+        </Div>
+        {teachers.map(renderPerson)}
 
-			<Div gap={10}>
-				<Text fontSize={18}>Siswa</Text>
-				<Div w="100%" borderColor="#1a1919" borderWidth={0.2} />
-			</Div>
-
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>asd</Text>
-			</Div>
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>Nigger</Text>
-			</Div>
-			<Div row justifyContent="flex-start" gap={10} alignItems="center" >
-				<Avatar bg="green800" >
-				  <Icon name="dashboard"  />
-				</Avatar>
-				<Text fontSize={15}>bbb</Text>
-			</Div>
-		</Div>
-		</ScrollView>
-	)
+        {/* Bagian Siswa */}
+        <Div gap={10} mt={15}>
+          <Text fontSize={18}>Siswa</Text>
+          <Div w="100%" borderColor="#1a1919" borderWidth={0.2} />
+        </Div>
+        {students.map(renderPerson)}
+      </Div>
+    </ScrollView>
+  );
 }

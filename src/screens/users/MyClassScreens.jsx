@@ -18,7 +18,7 @@ const TABS = ['Petunjuk', 'Tugas Siswa'];
 import MyClassPetunjukComponent from '../../component/MyClassPetunjukComponent';
 import MyClassTugasComponent from '../../component/MyClassTugasComponent';
 
-export default function MyClassScreens() {
+export default function MyClassScreens({route}) {
 
     const scrollRef = useRef(null);
     const [activeTab, setActiveTab] = useState(0);
@@ -26,6 +26,7 @@ export default function MyClassScreens() {
     const nav = useNavigation();
 
 	const handleTabPress = (index) => {
+    console.log(route.params)
 	    setActiveTab(index);
 	    scrollRef.current.scrollTo({ x: index * width, animated: true });
 	};
@@ -112,7 +113,7 @@ export default function MyClassScreens() {
           )}
         >
           <View style={styles.page}>
-            <MyClassPetunjukComponent />
+            <MyClassPetunjukComponent data={route.params.task} />
           </View>
           <View style={styles.page}>
             <MyClassTugasComponent />

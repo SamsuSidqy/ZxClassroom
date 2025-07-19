@@ -13,9 +13,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 
-export default function SettingsClassScreens(){
+export default function SettingsClassScreens({route}){
 	const nav = useNavigation()
 	const [copySet,setCopy] = useState(false);
+
+	const [namaKelas,setNamaKelas] = useState(route.params.nama_kelas)
+	const [nomorRuangan,setNomorRuangan] = useState(route.params.nomor_ruangan)
+	const [mataPelajaran,setMataPelajaran] = useState(route.params.mata_pelajaran)
+
 	return(
 		<>
 		<Header
@@ -51,12 +56,12 @@ export default function SettingsClassScreens(){
 			      fontWeight="bold" 
 			      color="#FFFFFF"
 			    >
-			      cnnvsaj
+			     {route.params.kode_kelas}
 			    </Text>
 			  </Div>
 			  
 			  <TouchableOpacity onPress={() => {
-			  	Clipboard.setString('hello world')
+			  	Clipboard.setString(route.params.kode_kelas)
 			  	setCopy(true)
 			  	setTimeout(() => {
 			  		setCopy(false)
@@ -69,33 +74,41 @@ export default function SettingsClassScreens(){
 	        <Text>Nama Kelas</Text>
 	        <Input
 			  placeholder="Nama Kelas"
+			  value={namaKelas}
+			  onChangeText={setNamaKelas}
 			  p={10}
 			  focusBorderColor="blue700"
-			  suffix={<Icon name="close" size={20} />}
+			  suffix={<Icon onPress={() => setNamaKelas('')} name="close" size={20} />}
 			/>
 			<Text>Mata Pelajaran</Text>
 	        <Input
 			  placeholder="Mata Pelajaran"
 			  p={10}
+			  value={mataPelajaran}
+			  onChangeText={setMataPelajaran}
 			  focusBorderColor="blue700"
-			  suffix={<Icon name="close" size={20} />}
+			  suffix={<Icon onPress={() => setMataPelajaran('')} name="close" size={20} />}
 			/>
 			<Text>Ruangan</Text>
 	        <Input
 			  placeholder="Ruangan"
 			  p={10}
+			  value={nomorRuangan}
+			  onChangeText={setNomorRuangan}
 			  focusBorderColor="blue700"
-			  suffix={<Icon name="close" size={20} />}
+			  suffix={<Icon onPress={() => setNomorRuangan('')} name="close" size={20} />}
 			/>
 
 			<Button
 			    mt="lg"
+			    disabled={nomorRuangan && mataPelajaran && namaKelas ? false : true}
 			    px="xl"
 			    py="lg"
 			    bg="#05dce3"
 			    borderWidth={0}
 			    color="#080808"
 			    underlayColor="red100"
+			    onPress={() => console.log(route.params)}
 			>
 			Simpan
 			</Button>

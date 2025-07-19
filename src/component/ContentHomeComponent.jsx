@@ -22,7 +22,7 @@ export default function ContentHomeComponent({ item }) {
     <TouchableOpacity style={{ marginTop: 10 }} onPress={() => nav.navigate('Class',item)}>
       <View style={[styles.card, { backgroundColor: '#4B7BE5', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 }]}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.title}>{item.nama_kelas}</Text>
+          <Text style={styles.title}>{item.nama_kelas + " "}{item.teacher ? "( Teacher )":"( Student )"}</Text>
           {item.time !== '' && <Text style={styles.time}>{item.mata_pelajaran}</Text>}
           <Text style={styles.lecturer}>{item.deskripsi}</Text>
           {item.note && <Text style={styles.note}>{item.note}</Text>}

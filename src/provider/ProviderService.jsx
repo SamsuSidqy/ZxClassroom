@@ -9,6 +9,9 @@ import ListTugas from '../api/ListTugas'
 import CreateKelas from '../api/CreateKelas'
 import JoinKelas from '../api/JoinKelas'
 import CreateTugas from '../api/CreateTugas'
+import ListPeopleKelas from '../api/ListPeopleKelas'
+import DetailTugas from '../api/DetailTugas'
+import CreateAnnounce from '../api/CreateAnnounce'
 
 function AuthProvider({ children }) {
 
@@ -133,8 +136,41 @@ function AuthProvider({ children }) {
     		const result = await CreateTugas(userObj.token,userObj.refresh_token,form)
     		return result
     	}catch(er){
-    		console.log(false)
+    		console.log(er)
     	}
+    }
+
+    const BuatPengumuman = async(form) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await CreateAnnounce(userObj.token,userObj.refresh_token,form)
+            return result
+        }catch(er){
+            console.log(er)
+        }
+    }
+
+    const ListKelasPeople = async(kodeKelas) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await ListPeopleKelas(userObj.token,userObj.refresh_token,kodeKelas)
+            return result
+        }catch(er){
+            return false
+        }
+    }
+
+    const TugasDetail = async(idKelas) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await DetailTugas(userObj.token,userObj.refresh_token,idKelas)
+            return result
+        }catch(er){
+            return false
+        }
     }
 
     useEffect(() => {
@@ -155,7 +191,10 @@ function AuthProvider({ children }) {
                 ListTugasData,
                 BuatKelas,
                 IkutKelas,
-                BuatTugas
+                BuatTugas,
+                ListKelasPeople,
+                TugasDetail,
+                BuatPengumuman
             }}
         >
             {children}
