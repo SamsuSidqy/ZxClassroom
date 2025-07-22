@@ -11,16 +11,30 @@ import LampiranComponent from "../../component/LampiranComponent";
 const AssigsmentScreens = ({route}) => {
     const dropdownRef = useRef();
 
-    const { TugasDetail } = useContext(AuthContext);
+    const { TugasDetail, TugasKirim, MyAsigsment } = useContext(AuthContext);
     const [lampiran,setLampiran] = useState([]);
     const [dataTugas,setDataTugas] = useState(null)
+    const [asigsment,setAsigsment] = useState(false)
     const [loading,setLoading] = useState(false)
 
     const RequestData = async() => {
         setLoading(true)
         const result = await TugasDetail(route.params.task.id_tugas)
-        if (result.status) {
+        const result2 = await MyAsigsment(route.params.task.id_tugas)            
+        if (result.status && result2) {
             setDataTugas(result.data.data)
+            if (result2.data.send) {
+                const dataAsigsment = result2.data.data.name_file.split(',').map(item => {
+                  return {
+                    uri: `https://gogle.com/${item.trim()}`,
+                    type: item.split('.').pop() == 'pdf' ? 
+                            `application/${item.split('.').pop()}` : 
+                            `image/${item.split('.').pop()}`
+                  };
+                });
+                setAsigsment(true)
+                setLampiran(Items => [...Items, ...dataAsigsment]);
+            }
             setLoading(false)
         }
         setLoading(false)
@@ -28,7 +42,6 @@ const AssigsmentScreens = ({route}) => {
 
     // Ambil File PDF
     const getFiles = async() => {
-
         try {
             const pdfResults = await pick({
                  type: [types.pdf,types.images],
@@ -62,7 +75,7 @@ const AssigsmentScreens = ({route}) => {
     };
 
     useEffect(() => {
-        if (dataTugas == null) {
+        if (dataTugas == null || asigsment == null) {
             RequestData()
         }
     },[])
@@ -89,6 +102,23 @@ const AssigsmentScreens = ({route}) => {
           const tahun = tanggal.getFullYear();
 
           tenggatFormatted = `Tenggat Waktu ${hari}/${tgl}/${bulan}/${tahun}`;
+        }
+
+        const SendingTugas = async() => {
+            const formData = new FormData()
+            formData.append("kode_kelas",route.params.kelas.kode_kelas)
+            formData.append("id_tugas",route.params.task.id_tugas)
+            if(lampiran.length > 0){
+                for (const file of lampiran) {
+                    formData.append("lampiran", {
+                        uri: file.uri,
+                        name: file.name,
+                        type: file.type
+                    });
+                }
+            }
+            const results = await TugasKirim(formData)
+            console.log(results)
         }
 
         return (
@@ -138,26 +168,35 @@ const AssigsmentScreens = ({route}) => {
                     maxHeight="100%"
                     title={
                        <>
-                          <Text mx="xl" color="gray500" pb="md">
-                            Tugas Anda :
+                          <Text mx="xl" color="#1a1b1c" pb="md">
+                            Tugas Anda :{asigsment ? " Sudah Di Serahkan" : " Belum Di Serahkan"}
                           </Text>
                           {tenggatFormatted && (
-                            <Text mx="xl" color="gray500" pb="md">
+                            <Text mx="xl" color="#1a1b1c" pb="md">
                               {tenggatFormatted}
                             </Text>
                           )}
+                          <Text mx="xl" color="#1a1b1c" pb="md">
+                              Nilai : {!asigsment ? asigsment : " Belum Di Nilai"}
+                          </Text>
                         </>
                     }
                     showSwipeIndicator={true}
                     roundedTop="xl"
                 >
                     <Div px={25} pb={20}>
-                        <Button mt="lg" w="100%" bg="green700" color="white" suffix={<Icon style={{ marginLeft: 10 }} color="#fff" name="recycling" size={20} />}>
+                        {!asigsment ? 
+                        <>
+                        <Button 
+                            disabled={!(lampiran.length)}
+                            onPress={SendingTugas} mt="lg" w="100%" bg="green700" color="white" suffix={<Icon style={{ marginLeft: 10 }} color="#fff" name="recycling" size={20} />}>
                             Serahkan
                         </Button>
                         <Button onPress={getFiles} mt="lg" w="100%" bg="gray100" color="black" suffix={<Icon style={{ marginLeft: 10 }} color="black" name="cloud-upload" size={20} />}>
                             Upload Tugas
                         </Button>
+                        </>
+                        :null}                        
                     </Div>
                     <Div
                     row
@@ -170,10 +209,12 @@ const AssigsmentScreens = ({route}) => {
                       alignSelf="center" gap={10}
                     >
                     {lampiran.map((data,index) => <LampiranComponent datas={data} btn={
+                        !asigsment ?
                         <>
                         <Icon onPress={() => deleteLampiranAtIndex(index)} name="delete" size={20} />
                         <Icon onPress={() => updateFiles(index)} name="attach-file" size={20} />
                         </>
+                        :null
                     } />)}
                     </Div>
                 </Dropdown>

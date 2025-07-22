@@ -12,6 +12,8 @@ import CreateTugas from '../api/CreateTugas'
 import ListPeopleKelas from '../api/ListPeopleKelas'
 import DetailTugas from '../api/DetailTugas'
 import CreateAnnounce from '../api/CreateAnnounce'
+import KirimTugas from '../api/KirimTugas'
+import MyAsigsments from '../api/MyAsigsments'
 
 function AuthProvider({ children }) {
 
@@ -173,6 +175,30 @@ function AuthProvider({ children }) {
         }
     }
 
+    const TugasKirim = async(form) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await KirimTugas(userObj.token,userObj.refresh_token,form)
+            return result
+        }catch(er){
+            return false
+            console.log(er)
+        }
+    }
+
+    const MyAsigsment = async(idKelas) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await MyAsigsments(userObj.token,userObj.refresh_token,idKelas)
+            return result
+        }catch(er){
+            return false
+            console.log(er)
+        }
+    }
+
     useEffect(() => {
     	checkDeviceStatus()
     	checkAuthentication()
@@ -194,7 +220,9 @@ function AuthProvider({ children }) {
                 BuatTugas,
                 ListKelasPeople,
                 TugasDetail,
-                BuatPengumuman
+                BuatPengumuman,
+                TugasKirim,
+                MyAsigsment
             }}
         >
             {children}

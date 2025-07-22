@@ -67,7 +67,7 @@ export default function TaskClassComponent({data,kelas,teacher}){
 	           style={{
 	            paddingVertical:5
 	           }}
-	           onPress={() => nav.navigate(teacher ? 'MyAssigsment': 'Assigsment',{task})}>
+	           onPress={() => nav.navigate(teacher ? 'MyAssigsment': 'Assigsment',{task,kelas})}>
 	          <Div
 	            key={index}
 	            bg="white"
