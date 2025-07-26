@@ -2,20 +2,18 @@ import axios from 'axios'
 import url from './Endpoint'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const KirimTugas = async (token, refreshToken,body) => {
+const TeacherAsigsment = async (token, refreshToken,id_kelas) => {
   try {
     // Request pertama dengan token lama
-    const response = await axios.post(`${url}asigsment`, body,{
+    const response = await axios.get(`${url}teacher/${id_kelas}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-        
       },
     });
 
     return { status: true, data: response.data };
   } catch (error) {
-    console.log(error)
+
     if (error.response?.status === 401) {
       try {
         const refreshResponse = await axios.get(`${url}refresh`, {
@@ -31,10 +29,9 @@ const KirimTugas = async (token, refreshToken,body) => {
         userObj.token = newAccessToken;
         await AsyncStorage.setItem('acounts',JSON.stringify(userObj))
 
-        const retryResponse = await axios.get(`${url}asigsment`, body,{
+        const retryResponse = await axios.get(`${url}teacher/${id_kelas}`, {
           headers: {
             Authorization: `Bearer ${newAccessToken}`,
-            'Content-Type': 'multipart/form-data'
           },
         });
 
@@ -48,11 +45,11 @@ const KirimTugas = async (token, refreshToken,body) => {
       }
     }
 
-   
+
     const message = error.response?.data?.message || 'Request failed';
     return { status: false, error: message };
   }
 };
 
 
-export default KirimTugas
+export default TeacherAsigsment

@@ -12,6 +12,7 @@ export default function LampiranComponent({ datas ,btn}) {
       {isPdf ? (
         <>
           <TouchableOpacity
+          disabled={["https", "http"].includes(datas.uri.split(":")[0])}
           onPress={() => viewDocument({ uri: datas.uri, mimeType: datas.type }).catch((er) => console.log(er))}
           >
           <Div h={150} justifyContent="center" alignItems="center" bg="gray100" rounded="md" shadow="md">
@@ -25,6 +26,7 @@ export default function LampiranComponent({ datas ,btn}) {
       ) : (
         <>
           <TouchableOpacity
+          disabled={["https", "http"].includes(datas.uri.split(":")[0])}
           onPress={() => viewDocument({ uri: datas.uri, mimeType: datas.type }).catch((er) => console.log(er))}
           >
           <Div h={150} rounded="md" overflow="hidden" shadow="md">

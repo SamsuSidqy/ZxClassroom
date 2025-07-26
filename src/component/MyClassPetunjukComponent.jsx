@@ -22,7 +22,9 @@ export default function MyClassPetunjukComponent({data}) {
 
   const RequestData = async() => {
         setLoading(true)
+        console.log(data)
         const result = await TugasDetail(data.id_tugas)
+        console.log(result)
         if (result.status) {
             setDataTugas(result.data.data)
             setLoading(false)

@@ -87,22 +87,23 @@ export default function CreateTask({route}){
 				});
 			}
 		}
-		console.log(formData)
+		
 		const results = await BuatTugas(formData)
 		if (results.status) {
 			setLampiran([])
 			setTenggat('')
 			setJudul('')
 			setDeskripsi('')
-			setLoading(false)
 			nav.goBack()
+			
 		}else{
 			setLampiran([])
 			setTenggat('')
 			setJudul('')
 			setDeskripsi('')
-			setLoading(false)
 		}
+		setLoading(false)
+			
 
 	}
 	

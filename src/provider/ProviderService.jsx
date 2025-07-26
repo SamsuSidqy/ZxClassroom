@@ -14,6 +14,7 @@ import DetailTugas from '../api/DetailTugas'
 import CreateAnnounce from '../api/CreateAnnounce'
 import KirimTugas from '../api/KirimTugas'
 import MyAsigsments from '../api/MyAsigsments'
+import TeacherAsigsment from '../api/TeacherAsigsment'
 
 function AuthProvider({ children }) {
 
@@ -199,6 +200,18 @@ function AuthProvider({ children }) {
         }
     }
 
+    const TeacherAsigsments = async(idKelas) => {
+         try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await TeacherAsigsment(userObj.token,userObj.refresh_token,idKelas)
+            return result
+        }catch(er){
+            return false
+            console.log(er)
+        }
+    }
+
     useEffect(() => {
     	checkDeviceStatus()
     	checkAuthentication()
@@ -222,7 +235,8 @@ function AuthProvider({ children }) {
                 TugasDetail,
                 BuatPengumuman,
                 TugasKirim,
-                MyAsigsment
+                MyAsigsment,
+                TeacherAsigsments
             }}
         >
             {children}

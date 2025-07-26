@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
-const TABS = ['Petunjuk', 'Tugas Siswa'];
+
 
 
 import MyClassPetunjukComponent from '../../component/MyClassPetunjukComponent';
@@ -25,6 +25,8 @@ export default function MyClassScreens({route}) {
     const scrollX = useRef(new Animated.Value(0)).current;
     const nav = useNavigation();
 
+  const TABS = route.params.task.type == 'Tugas' ? ['Petunjuk', 'Tugas Siswa'] : ['Petunjuk'];
+
 	const handleTabPress = (index) => {
     console.log(route.params)
 	    setActiveTab(index);
@@ -34,15 +36,16 @@ export default function MyClassScreens({route}) {
     // Width of the underline interpolated from scrollX
     const indicatorTranslateX = scrollX.interpolate({
 	    inputRange: [0, width],
-	    outputRange: [0, width / 2],
+	    outputRange: [0, width / TABS.length],
 	    extrapolate: 'clamp',
     });
 
 	const indicatorScaleX = scrollX.interpolate({
-	   inputRange: [0, width / 2, width],
+	   inputRange: [0, width / TABS.length, width],
 	   outputRange: [0.5, 1, 0.5],
 	   extrapolate: 'clamp',
 	});
+
 
   return (
     <>
@@ -81,7 +84,15 @@ export default function MyClassScreens({route}) {
         {/* Animated Underline */}
         <Animated.View
           style={[
-            styles.indicator,
+           {
+              position: 'absolute',
+              top: 48,
+              left: 0,
+              width: width / TABS.length,
+              height: 3,
+              backgroundColor: '#2563EB', // Tailwind blue700
+              borderRadius: 2,
+            },
             {
               transform: [
                 { translateX: indicatorTranslateX },
@@ -116,7 +127,7 @@ export default function MyClassScreens({route}) {
             <MyClassPetunjukComponent data={route.params.task} />
           </View>
           <View style={styles.page}>
-            <MyClassTugasComponent />
+            <MyClassTugasComponent data={route.params.task}/>
           </View>
         </Animated.ScrollView>
       </Div>
@@ -129,15 +140,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  indicator: {
-    position: 'absolute',
-    top: 48,
-    left: 0,
-    width: width / 2,
-    height: 3,
-    backgroundColor: '#2563EB', // Tailwind blue700
-    borderRadius: 2,
   },
   page: {
     width: width,
