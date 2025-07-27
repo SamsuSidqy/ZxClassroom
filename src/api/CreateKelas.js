@@ -29,7 +29,7 @@ const CreateKelas = async (token, refreshToken,body) => {
         userObj.token = newAccessToken;
         await AsyncStorage.setItem('acounts',JSON.stringify(userObj))
 
-        const retryResponse = await axios.get(`${url}kelas`, body,{
+        const retryResponse = await axios.post(`${url}kelas`, body,{
           headers: {
             Authorization: `Bearer ${newAccessToken}`,
           },

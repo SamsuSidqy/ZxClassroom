@@ -4,18 +4,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const KirimTugas = async (token, refreshToken,body) => {
   try {
-    // Request pertama dengan token lama
-    const response = await axios.post(`${url}asigsment`, body,{
+    const response = await axios.post(`${url}asign`, body,{
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-        
+        'Content-Type':'multipart/form-data'      
       },
     });
 
     return { status: true, data: response.data };
   } catch (error) {
-    console.log(error)
     if (error.response?.status === 401) {
       try {
         const refreshResponse = await axios.get(`${url}refresh`, {
@@ -31,10 +28,10 @@ const KirimTugas = async (token, refreshToken,body) => {
         userObj.token = newAccessToken;
         await AsyncStorage.setItem('acounts',JSON.stringify(userObj))
 
-        const retryResponse = await axios.get(`${url}asigsment`, body,{
+        const retryResponse = await axios.post(`${url}asigsment`, body,{
           headers: {
             Authorization: `Bearer ${newAccessToken}`,
-            'Content-Type': 'multipart/form-data'
+            'Content-Type':'multipart/form-data'
           },
         });
 

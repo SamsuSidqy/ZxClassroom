@@ -4,11 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CreateTugas = async (token, refreshToken,body) => {
   try {
-    // Request pertama dengan token lama
     const response = await axios.post(`${url}tugas`, body,{
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
+        'Content-Type':'multipart/form-data'
       },
     });
 
@@ -30,10 +29,10 @@ const CreateTugas = async (token, refreshToken,body) => {
         userObj.token = newAccessToken;
         await AsyncStorage.setItem('acounts',JSON.stringify(userObj))
 
-        const retryResponse = await axios.get(`${url}tugas`, body,{
+        const retryResponse = await axios.post(`${url}tugas`, body,{
           headers: {
             Authorization: `Bearer ${newAccessToken}`,
-            'Content-Type': 'multipart/form-data'
+            'Content-Type':'multipart/form-data'
           },
         });
 

@@ -4,6 +4,7 @@ import { ScrollView, TouchableOpacity, View, Dimensions,
 import { Div, Text, Button, Row, Dropdown, Skeleton } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { pick, types } from "@react-native-documents/picker";
+import { viewDocument } from '@react-native-documents/viewer';
 import RNFS  from 'react-native-fs'
 import { AuthProvider, AuthContext } from "../../provider/ProviderService";
 import ReactNativeBlobUtil from 'react-native-blob-util'
@@ -18,12 +19,13 @@ const AssigsmentScreens = ({ route }) => {
 
     const { TugasDetail, TugasKirim, MyAsigsment } = useContext(AuthContext);
     const [lampiran, setLampiran] = useState([]);
+    const [lampiranSend,setLampiranSend] = useState([])
     const [dataTugas, setDataTugas] = useState(null);
     const [asigsment, setAsigsment] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingAsign,setLoadingAsign] = useState(false)
     const [checkDownload,setCheckDownload] = useState(false)
-    const [downloadProgress, setDownloadProgress] = useState(0);
+    const [downloadProgress, setDownloadProgress] = useState(false);
 
     const RequestData = async () => {
         setLoading(true);
@@ -53,7 +55,21 @@ const AssigsmentScreens = ({ route }) => {
                 type: [types.pdf, types.images],
                 allowMultiSelection: true,
             });
+            const copiedFiles = [];
+            for(const d of pdfResults){
+                const fileName = d.name
+                const targetPath = `${ReactNativeBlobUtil.fs.dirs.CacheDir}/${fileName}`;
+                await ReactNativeBlobUtil.fs.cp(d.uri, targetPath);
+                copiedFiles.push({
+                    uri: `file://${targetPath}`,
+                    name: fileName,
+                    type:d.type
+                })
+            }
+
+            setLampiranSend((Items) => [...Items, ...copiedFiles])
             setLampiran((Items) => [...Items, ...pdfResults]);
+            
         } catch (err) {}
     };
 
@@ -62,9 +78,18 @@ const AssigsmentScreens = ({ route }) => {
             const pdfResults = await pick({
                 type: [types.pdf, types.images],
             });
+            const fileName = pdfResults[0].name
+            const targetPath = `${ReactNativeBlobUtil.fs.dirs.CacheDir}/${fileName}`;
+            await ReactNativeBlobUtil.fs.cp(d.uri, targetPath);
+            const copy = {uri:`file://${targetPath}`,type:pdfResults[0].type}
+            setLampiranSend((prevItems) => {
+                const updatedItems = [...prevItems];
+                updatedItems[index] = copy
+                return updatedItems;
+            });
             setLampiran((prevItems) => {
                 const updatedItems = [...prevItems];
-                updatedItems[index] = pdfResults[0];
+                updatedItems[index] = pdfResults[0]
                 return updatedItems;
             });
         } catch (err) {}
@@ -84,11 +109,12 @@ const AssigsmentScreens = ({ route }) => {
             for (const file of lampiran) {
                 formData.append("lampiran", {
                     uri: file.uri,
-                    name: file.name,
                     type: file.type,
+                    name: file.name,
                 });
             }
         }
+
         const results = await TugasKirim(formData);
         console.log(results)
         if (results.status) {
@@ -97,6 +123,7 @@ const AssigsmentScreens = ({ route }) => {
         setLoadingAsign(false)
     };
 
+    
 
     const CheckFilesDownload = async (data,index) => {
       const { fs } = ReactNativeBlobUtil;
@@ -124,6 +151,7 @@ const AssigsmentScreens = ({ route }) => {
 
     const SaveFile = async (data) => {
         try {
+            setDownloadProgress(true)
             const { config, fs, MediaCollection } = ReactNativeBlobUtil;
 
             const fileUrl = data.uri;
@@ -145,7 +173,7 @@ const AssigsmentScreens = ({ route }) => {
                 fileCache: true,
                 path: fullPath,
                 addAndroidDownloads: {
-                    useDownloadManager: true,
+                    useDownloadManager: false,
                     description: "Downloading file...",
                     path: fullPath,
                     title: fileName,
@@ -157,7 +185,7 @@ const AssigsmentScreens = ({ route }) => {
             .fetch("GET", fileUrl)
             .progress({ count: 10 }, (received, total) => {
                 const percent = (received / total) * 100;
-                console.log(`Progress: ${percent.toFixed(2)}%`);
+                console.log(percent)
             });
 
             const res = await task;
@@ -185,15 +213,46 @@ const AssigsmentScreens = ({ route }) => {
                 }
             }
 
-            Alert.alert("Download complete", `File saved to: ${res.path()}`);
+            Alert.alert("Download complete", `File saved to: ${RNFS.DownloadDirectoryPath}`);
+            lampiran.forEach((item, index) => {
+                CheckFilesDownload(item, index);
+            });
+            setDownloadProgress(false)
         } catch (error) {
             console.error("Download failed:", error);
             Alert.alert("Download failed", error.message || "Failed to download file");
+            setDownloadProgress(false)
         }
     };
 
 
+    const LihatLampiranTugas = async (namefile) => {
+        const { fs } = ReactNativeBlobUtil;
+        const folderPath = RNFS.DownloadDirectoryPath;
+        const mimeType = namefile.split(".").pop();
+        try {
+            const files = await fs.ls(folderPath);
 
+            const isFileExist = files.includes(namefile);
+
+            if (isFileExist) {
+                console.log('File Ada !!');
+                const fileUri = `file://${folderPath}/${namefile}`;
+                viewDocument({
+                    uri: fileUri,
+                    type: mimeType === 'pdf' ? `application/pdf` : `image/${mimeType}`
+                });
+            } else {
+                const data = {
+                    uri: `${url}open/${namefile}`,
+                    type: mimeType === 'pdf' ? `application/pdf` : `image/${mimeType}`
+                };
+                await SaveFile(data);
+            }
+        } catch (er) {
+            console.log(er);
+        }
+    };
 
 
 
@@ -259,14 +318,14 @@ const AssigsmentScreens = ({ route }) => {
                                           <Text color="#349eeb">{item}</Text>
                                           <Div gap={15} row justifyContent="space-between">
                                               <TouchableOpacity>
-                                                  <Icon name="remove-red-eye" size={20} />
+                                                  <Icon onPress={() => LihatLampiranTugas(item)} name="remove-red-eye" size={20} />
                                               </TouchableOpacity>
                                           </Div>
                                       </Div>
                                   </Div>
-                              ))
+                     ))
                             : null}
-                    </Div>
+                    </Div>         
                 </ScrollView>
 
                 {dataTugas?.type == "Tugas" ? (
@@ -308,7 +367,7 @@ const AssigsmentScreens = ({ route }) => {
                                 ) : (
                                     <>
                                         <Button
-                                            disabled={!lampiran.length}
+                                            disabled={lampiran.length > 0 ? false : true}
                                             onPress={SendingTugas}
                                             mt="lg"
                                             w="100%"
@@ -359,8 +418,14 @@ const AssigsmentScreens = ({ route }) => {
                                             <Icon onPress={() => deleteLampiranAtIndex(index)} name="delete" size={20} />
                                             <Icon onPress={() => updateFiles(index)} name="attach-file" size={20} />
                                         </>
-                                    ) : <Icon name="save-alt" size={20} 
+                                    ) : (
+                                        <>
+                                        {["https", "http"].includes(data.uri.split(":")[0]) ?
+                                        <Icon name="save-alt" size={20} 
                                         onPress={() => SaveFile(data)}/>
+                                        :null}
+                                        </>
+                                        )
                                 }
                             />
                         ))}

@@ -6,6 +6,8 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { pick, types } from '@react-native-documents/picker';
 import { viewDocument } from '@react-native-documents/viewer';
 import { useNavigation } from '@react-navigation/native';
+import RNFS  from 'react-native-fs'
+import ReactNativeBlobUtil from 'react-native-blob-util'
 
 import HeaderTaskComponent from '../../component/HeaderTaskComponent';
 import LampiranComponent from '../../component/LampiranComponent';
@@ -16,6 +18,7 @@ import {AuthProvider, AuthContext} from '../../provider/ProviderService'
 export default function CreateAnnounchments({route}){
 	const [dates,setDates] = useState('')
 	const [lampiran,setLampiran] = useState([]);
+	const [lampiranSend,setLampiranSend] = useState([])
 
 	const { BuatPengumuman } = useContext(AuthContext);
 
@@ -34,8 +37,8 @@ export default function CreateAnnounchments({route}){
 		formData.append("kode_kelas",route.params.kode_kelas)
 		
 
-		if(lampiran.length > 0){
-			for (const file of lampiran) {
+		if(lampiranSend.length > 0){
+			for (const file of lampiranSend) {
 				formData.append("lampiran", {
 					uri: file.uri,
 					name: file.name,
@@ -64,21 +67,33 @@ export default function CreateAnnounchments({route}){
 	// Ambil File PDF
 	const getFilesPDF = async() => {
 		try {
-	        const pdfResults = await pick({
-	        	 type: [types.pdf,types.images],
-	        	 allowMultiSelection:true
-	        })
-	        setLampiran(Items => [...Items, ...pdfResults]);
+	       const pdfResults = await pick({
+                type: [types.pdf, types.images],
+                allowMultiSelection: true,
+            });
+            const copiedFiles = [];
+            for(const d of pdfResults){
+                const fileName = d.name
+                const targetPath = `${ReactNativeBlobUtil.fs.dirs.CacheDir}/${fileName}`;
+                await ReactNativeBlobUtil.fs.cp(d.uri, targetPath);
+                copiedFiles.push({
+                    uri: `file://${targetPath}`,
+                    name: fileName,
+                    type:d.type
+                })
+            }
+            setLampiranSend((Items) => [...Items, ...copiedFiles])
+            setLampiran((Items) => [...Items, ...pdfResults]);
 	      } catch (err) {
 
 	      }
 	}
 
 	
-
 	// Delete Lampiran
 	const deleteLampiranAtIndex = (indexToDelete) => {
 	  setLampiran(prev => prev.filter((_, index) => index !== indexToDelete));
+	  setLampiranSend(prev => prev.filter((_, index) => index !== indexToDelete));
 	};
 
 

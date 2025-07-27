@@ -30,7 +30,7 @@ const CreateAnnounce = async (token, refreshToken,body) => {
         userObj.token = newAccessToken;
         await AsyncStorage.setItem('acounts',JSON.stringify(userObj))
 
-        const retryResponse = await axios.get(`${url}announch`, body,{
+        const retryResponse = await axios.post(`${url}announch`, body,{
           headers: {
             Authorization: `Bearer ${newAccessToken}`,
             'Content-Type': 'multipart/form-data'

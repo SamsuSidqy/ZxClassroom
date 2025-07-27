@@ -181,6 +181,7 @@ function AuthProvider({ children }) {
             const storedUser = await AsyncStorage.getItem('acounts');
             const userObj = storedUser ? JSON.parse(storedUser) : {};
             const result = await KirimTugas(userObj.token,userObj.refresh_token,form)
+            console.log(result)
             return result
         }catch(er){
             return false
