@@ -1,4 +1,4 @@
-import React, {useContext, useCallback, useState } from 'react';
+import React, {useContext, useEffect, useCallback, useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -46,11 +46,14 @@ export default function HomeScreens() {
     setRefresh(false)
   }
 
+
+
+
   useFocusEffect(
     useCallback(() => {
       if (dataKelas === null) {
         AmbilDataKelas();
-      }
+      }      
       
       return () => {
         // Optional: cleanup

@@ -21,17 +21,20 @@ const ClassroomScreen = ({ route }) => {
   const nav = useNavigation();
   const [navbottom, setNavBottom] = useState("forum");
   const [datatugas, setDatatugas] = useState(null);
+  const [detailkelas, setDetailKelas] = useState(null)
   const [peopleKelas, setPopleKelas] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { ListTugasData, ListKelasPeople } = useContext(AuthContext);
+  const { ListTugasData, ListKelasPeople, KelasDetail } = useContext(AuthContext);
 
   const RequestsData = async () => {
     const response = await ListTugasData(route.params.id_kelas);
     const response2 = await ListKelasPeople(route.params.kode_kelas);
-    if (response.status && response2.status) {
+    const response3 = await KelasDetail(route.params.id_kelas)    
+    if (response.status && response2.status && response3.status) {
       setDatatugas(response.data.data);
       setPopleKelas(response2.data.data);
+      setDetailKelas(response3.data.kelas)
     } else {
       setDatatugas([]);
     }
@@ -40,8 +43,10 @@ const ClassroomScreen = ({ route }) => {
   const RefreshTugas = async () => {
     setRefreshing(true);
     const response = await ListTugasData(route.params.id_kelas);
+    const response2 = await KelasDetail(route.params.id_kelas)   
     if (response.status) {
       setDatatugas(response.data.data);
+      setDetailKelas(response2.data.kelas)
       setRefreshing(false);
     } else {
       setDatatugas([]);
@@ -76,16 +81,16 @@ const ClassroomScreen = ({ route }) => {
       <DrawwerComponent
         setings={
           route.params.teacher ? (
-            <TouchableOpacity onPress={() => nav.navigate("SettingsClass",route.params)}>
+            <TouchableOpacity onPress={detailkelas ? () => nav.navigate("SettingsClass",detailkelas) : null}>
               <Icon color="#26aec9" name="settings" size={30} />
             </TouchableOpacity>
           ) : null
         }
         chat={
           <TouchableOpacity >
-            <Badge>
-              <Icon color="#26aec9" name="chat" size={30} />
-            </Badge>
+            <TouchableOpacity onPress={() => nav.navigate('Forum',route.params)}>
+              <Icon  color="#26aec9" name="chat" size={30} />
+            </TouchableOpacity>
           </TouchableOpacity>
         }
       />

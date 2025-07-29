@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState ,useContext, useEffect } from 'react';
 import {
   ScrollView,
   View,
@@ -7,19 +7,57 @@ import {
   TouchableOpacity,
   Animated,
   Clipboard,
+  BackHandler,
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { Div, Header, Button, Text, Input } from 'react-native-magnus';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-
+import { AuthProvider, AuthContext } from "../../provider/ProviderService";
 
 export default function SettingsClassScreens({route}){
 	const nav = useNavigation()
 	const [copySet,setCopy] = useState(false);
+	const [loading,setLoading] = useState(false)
 
 	const [namaKelas,setNamaKelas] = useState(route.params.nama_kelas)
 	const [nomorRuangan,setNomorRuangan] = useState(route.params.nomor_ruangan)
 	const [mataPelajaran,setMataPelajaran] = useState(route.params.mata_pelajaran)
+	const [deskripsiKelas,setDeskripsiKelas] = useState(route.params.deskripsi_kelas)
+
+	const { KelasUpdate } = useContext(AuthContext);
+
+	const UpdateKelas = async() => {
+		setLoading(true)
+		const body = {
+			nama_kelas:namaKelas,
+			nomor_ruangan:nomorRuangan,
+			mata_pelajaran:mataPelajaran,
+			deskripsi_kelas:deskripsiKelas
+		}
+		const result = await KelasUpdate(body,route.params.kode_kelas)
+		if (result.status) {
+			Alert.alert('Success','Data Berhasil Di Update')
+		}else{
+			Alert.alert('Failed','Data Gagal Di Update')
+		}
+		setLoading(false)
+	}
+
+	useEffect(() => {
+
+		const backAction = () => {
+			nav.goBack()
+			return true
+		}
+
+		const backHandler = BackHandler.addEventListener(
+	      'hardwareBackPress',
+	      backAction,
+	    );
+		 return () => backHandler.remove();
+	},[])
 
 	return(
 		<>
@@ -37,7 +75,7 @@ export default function SettingsClassScreens({route}){
 	    Detail Kelas
 	    </Header>
 
-
+	    <ScrollView>
 	    <Div mx={20} my={15} gap={10}>
 	    	<Div 
 			  row 
@@ -78,7 +116,7 @@ export default function SettingsClassScreens({route}){
 			  onChangeText={setNamaKelas}
 			  p={10}
 			  focusBorderColor="blue700"
-			  suffix={<Icon onPress={() => setNamaKelas('')} name="close" size={20} />}
+			  suffix={namaKelas ? <Icon onPress={() => setNamaKelas('')} name="close" size={20} /> : null}
 			/>
 			<Text>Mata Pelajaran</Text>
 	        <Input
@@ -87,7 +125,7 @@ export default function SettingsClassScreens({route}){
 			  value={mataPelajaran}
 			  onChangeText={setMataPelajaran}
 			  focusBorderColor="blue700"
-			  suffix={<Icon onPress={() => setMataPelajaran('')} name="close" size={20} />}
+			  suffix={mataPelajaran ? <Icon onPress={() => setMataPelajaran('')} name="close" size={20} /> : null}
 			/>
 			<Text>Ruangan</Text>
 	        <Input
@@ -96,7 +134,17 @@ export default function SettingsClassScreens({route}){
 			  value={nomorRuangan}
 			  onChangeText={setNomorRuangan}
 			  focusBorderColor="blue700"
-			  suffix={<Icon onPress={() => setNomorRuangan('')} name="close" size={20} />}
+			  suffix={nomorRuangan ? <Icon onPress={() => setNomorRuangan('')} name="close" size={20} /> : null}
+			/>
+			<Text>Deskripsi</Text>
+	        <Input
+			  placeholder="Deskripsi Kelas"
+			  multiline={true}
+			  p={10}
+			  value={deskripsiKelas}
+			  onChangeText={setDeskripsiKelas}
+			  focusBorderColor="blue700"
+			  suffix={deskripsiKelas ? <Icon onPress={() => setDeskripsiKelas('')} name="close" size={20} /> : null}
 			/>
 
 			<Button
@@ -108,13 +156,13 @@ export default function SettingsClassScreens({route}){
 			    borderWidth={0}
 			    color="#080808"
 			    underlayColor="red100"
-			    onPress={() => console.log(route.params)}
+			    onPress={UpdateKelas}
 			>
-			Simpan
+			{loading ? <ActivityIndicator size="small" color="#0000ff" /> : 'Simpan'}
 			</Button>
 
 	    </Div>
-
+	    </ScrollView>
 	    </>
 	)
 }

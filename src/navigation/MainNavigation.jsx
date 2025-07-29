@@ -10,6 +10,8 @@ import CreateTask from '../screens/users/CreateTask';
 import CreateAnnounchments from '../screens/users/CreateAnnounchments';
 import MyClassScreens from '../screens/users/MyClassScreens';
 import SettingsClassScreens from '../screens/users/SettingsClassScreens';
+import ProfileScreens from '../screens/users/ProfileScreens'
+import ForumScreens from '../screens/users/ForumChatScreens'
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +37,8 @@ export default function MainNavigation() {
             <Stack.Screen name="MyAssigsment" component={MyClassScreens} />
             <Stack.Screen name="SettingsClass" component={SettingsClassScreens} />
             <Stack.Screen name="CreateAnnounch" component={CreateAnnounchments} />
+            <Stack.Screen name="MyProfile" component={ProfileScreens} />
+            <Stack.Screen name="Forum" component={ForumScreens} />
           </>
         )}
       </Stack.Navigator>

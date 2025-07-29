@@ -15,12 +15,16 @@ import CreateAnnounce from '../api/CreateAnnounce'
 import KirimTugas from '../api/KirimTugas'
 import MyAsigsments from '../api/MyAsigsments'
 import TeacherAsigsment from '../api/TeacherAsigsment'
+import UpdateKelas from '../api/UpdateKelas'
+import DetailKelas from '../api/DetailKelas'
+import UpdateUsers from '../api/UpdateProfile'
 
 function AuthProvider({ children }) {
 
     const [deviceNew, setDeviceNew] = useState(false);
     const [authentication, setAuthentication] = useState(false);
     const [account, setAccount] = useState(null)
+    const [refreshGlobal, setRefreshGlobal] = useState(false);
 
     const SetDevice = async () => {
         setDeviceNew(true);
@@ -77,8 +81,7 @@ function AuthProvider({ children }) {
             const storedUser = await AsyncStorage.getItem("acounts");
             if (storedUser) {
                 setAuthentication(true);
-                setUser(JSON.parse(storedUser));
-                setAccount(storedUser)
+                setAccount(JSON.parse(storedUser))
             } else {
                 setAuthentication(false);
             }
@@ -213,6 +216,47 @@ function AuthProvider({ children }) {
         }
     }
 
+    const KelasUpdate = async(data,kode) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await UpdateKelas(userObj.token,userObj.refresh_token,data,kode)
+            return result
+        }catch(er){
+            return false
+            console.log(false)
+        }
+    }
+
+    const UpdateProfile = async(body) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await UpdateUsers(userObj.token,userObj.refresh_token,body)
+            if (result.status) {
+                setAccount(result.data.data)
+                await AsyncStorage.setItem('acounts', JSON.stringify(result.data.data));
+            }
+            return result
+        }catch(er){
+            console.log(er)
+            return false
+        }
+    }
+
+    const KelasDetail = async(idKelas) => {
+         try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await DetailKelas(userObj.token,userObj.refresh_token,idKelas)
+            return result
+        }catch(er){
+            return null
+            console.log(er)
+        }
+    }
+    
+
     useEffect(() => {
     	checkDeviceStatus()
     	checkAuthentication()
@@ -223,6 +267,7 @@ function AuthProvider({ children }) {
             value={{
                 SetDevice,
                 deviceNew,
+                account,
                 authentication,
                 register,
                 loginUser,
@@ -237,7 +282,10 @@ function AuthProvider({ children }) {
                 BuatPengumuman,
                 TugasKirim,
                 MyAsigsment,
-                TeacherAsigsments
+                TeacherAsigsments,
+                KelasUpdate,
+                KelasDetail,
+                UpdateProfile
             }}
         >
             {children}

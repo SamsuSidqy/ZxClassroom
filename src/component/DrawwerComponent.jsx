@@ -31,8 +31,7 @@ export default function DrawwerComponent  ({setings,chat}) {
   return (
     <View style={{ }}>
      
-      <HeaderUserComponent     
-      profileImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFZEjaNca5sYZ3-ZGm3cQH4qOAInQGJvYk1w&s" 
+      <HeaderUserComponent            
       username="doni"
       onMenuPress={() => drawerRef.current.open()}
       settings={setings}
