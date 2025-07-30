@@ -18,6 +18,7 @@ import TeacherAsigsment from '../api/TeacherAsigsment'
 import UpdateKelas from '../api/UpdateKelas'
 import DetailKelas from '../api/DetailKelas'
 import UpdateUsers from '../api/UpdateProfile'
+import ListPesan from '../api/PesanList'
 
 function AuthProvider({ children }) {
 
@@ -58,8 +59,8 @@ function AuthProvider({ children }) {
     	const result = await loginUsers(userData)
     	if (result.status) {
     		const users = JSON.stringify(result.data.users);
-    		setAccount(users)
     		await AsyncStorage.setItem('acounts', users);
+    		setAccount(result.data.users)
     		setAuthentication(true)
     	}
     	return result
@@ -255,6 +256,18 @@ function AuthProvider({ children }) {
             console.log(er)
         }
     }
+
+    const PesanList = async(room) => {
+         try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await ListPesan(userObj.token,userObj.refresh_token,room)
+            return result
+        }catch(er){
+            return null
+            console.log(er)
+        }
+    }
     
 
     useEffect(() => {
@@ -285,7 +298,8 @@ function AuthProvider({ children }) {
                 TeacherAsigsments,
                 KelasUpdate,
                 KelasDetail,
-                UpdateProfile
+                UpdateProfile,
+                PesanList
             }}
         >
             {children}
