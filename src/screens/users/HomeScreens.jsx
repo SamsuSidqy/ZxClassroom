@@ -40,6 +40,7 @@ export default function HomeScreens() {
   const RefreshData = async () => {
     setRefresh(true)
     const res = await ListKelasData()
+    console.log(res)
     if (res.status) {
       setDataKelas(res.data.data)
     }

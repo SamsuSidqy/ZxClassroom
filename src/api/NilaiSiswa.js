@@ -2,17 +2,17 @@ import axios from 'axios'
 import url from './Endpoint'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const KirimTugas = async (token, refreshToken,body) => {
+const NilaiAsigsment = async (token, refreshToken,body) => {
   try {
-    const response = await axios.post(`${url}asign`, body,{
+    const response = await axios.put(`${url}teacher/nilai`, body,{
       headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type':'multipart/form-data'      
+        Authorization: `Bearer ${token}`
       },
     });
 
     return { status: true, data: response.data };
   } catch (error) {
+    console.log(error)
     if (error.response?.status === 401) {
       try {
         const refreshResponse = await axios.get(`${url}refresh`, {
@@ -28,10 +28,9 @@ const KirimTugas = async (token, refreshToken,body) => {
         userObj.token = newAccessToken;
         await AsyncStorage.setItem('acounts',JSON.stringify(userObj))
 
-        const retryResponse = await axios.post(`${url}asign`, body,{
+        const retryResponse = await axios.put(`${url}teacher/nilai`, body,{
           headers: {
-            Authorization: `Bearer ${newAccessToken}`,
-            'Content-Type':'multipart/form-data'
+            Authorization: `Bearer ${newAccessToken}`
           },
         });
 
@@ -52,4 +51,4 @@ const KirimTugas = async (token, refreshToken,body) => {
 };
 
 
-export default KirimTugas
+export default NilaiAsigsment

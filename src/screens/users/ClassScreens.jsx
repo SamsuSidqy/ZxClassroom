@@ -43,10 +43,12 @@ const ClassroomScreen = ({ route }) => {
   const RefreshTugas = async () => {
     setRefreshing(true);
     const response = await ListTugasData(route.params.id_kelas);
-    const response2 = await KelasDetail(route.params.id_kelas)   
+    const response2 = await KelasDetail(route.params.id_kelas) 
+    const response3 = await ListKelasPeople(route.params.kode_kelas);  
     if (response.status) {
       setDatatugas(response.data.data);
       setDetailKelas(response2.data.kelas)
+      setPopleKelas(response3.data.data);
       setRefreshing(false);
     } else {
       setDatatugas([]);

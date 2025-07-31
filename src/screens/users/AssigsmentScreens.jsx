@@ -22,17 +22,29 @@ const AssigsmentScreens = ({ route }) => {
     const [lampiranSend,setLampiranSend] = useState([])
     const [dataTugas, setDataTugas] = useState(null);
     const [asigsment, setAsigsment] = useState(false);
+    const [nilai,setNilai] = useState(null)
     const [loading, setLoading] = useState(false);
     const [loadingAsign,setLoadingAsign] = useState(false)
     const [checkDownload,setCheckDownload] = useState(false)
     const [downloadProgress, setDownloadProgress] = useState(false);
+    const [deadlineTugas,setDeadlineTugas] = useState(false)
 
     const RequestData = async () => {
         setLoading(true);
         const result = await TugasDetail(route.params.task.id_tugas);
         const result2 = await MyAsigsment(route.params.task.id_tugas);
+        console.log(result2)
         if (result.status && result2) {
             setDataTugas(result.data.data);
+
+            if (result.data.data?.tenggat_waktu) {
+                const tengat = new Date(result.data.data.tenggat_waktu)
+                const now = new Date()
+                if (tengat < now) {
+                    setDeadlineTugas(true)
+                }
+            }
+
             if (result2.data.send) {
                 const dataAsigsment = result2.data.data.name_file.split(",").map((item) => {
                     return {
@@ -41,6 +53,9 @@ const AssigsmentScreens = ({ route }) => {
                     };
                 });
                 setAsigsment(true);
+                if (result2.data.data.nilai) {
+                    setNilai(result2.data.data.nilai)
+                }
                 setLampiran(dataAsigsment);
             }
             setLoading(false);
@@ -290,6 +305,7 @@ const AssigsmentScreens = ({ route }) => {
 
         if (dataTugas?.tenggat_waktu) {
             const tanggal = new Date(dataTugas.tenggat_waktu);
+            const now = new Date();
             const hari = days[tanggal.getDay()];
             const tgl = tanggal.getDate();
             const bulan = tanggal.getMonth() + 1;
@@ -317,8 +333,8 @@ const AssigsmentScreens = ({ route }) => {
                                       <Div w="100%" gap={5} row justifyContent="space-between" alignItems="center" mt="xl">
                                           <Text color="#349eeb">{item}</Text>
                                           <Div gap={15} row justifyContent="space-between">
-                                              <TouchableOpacity>
-                                                  <Icon onPress={() => LihatLampiranTugas(item)} name="remove-red-eye" size={20} />
+                                              <TouchableOpacity onPress={() => LihatLampiranTugas(item)}>
+                                                  <Icon name="remove-red-eye" size={20} />
                                               </TouchableOpacity>
                                           </Div>
                                       </Div>
@@ -348,11 +364,11 @@ const AssigsmentScreens = ({ route }) => {
                             </Text>
                             {tenggatFormatted && (
                                 <Text mx="xl" color="#1a1b1c" pb="md">
-                                    {tenggatFormatted}
+                                    {deadlineTugas ? 'Tenggat : Waktu Kirim Berakhir' : tenggatFormatted}
                                 </Text>
                             )}
                             <Text mx="xl" color="#1a1b1c" pb="md">
-                                Nilai : {!asigsment ? asigsment : " Belum Di Nilai"}
+                                Nilai : {nilai ? nilai : " Belum Di Nilai"}
                             </Text>
                         </>
                     }
@@ -385,6 +401,7 @@ const AssigsmentScreens = ({ route }) => {
                                             Serahkan
                                         </Button>
                                         <Button
+                                            disabled={deadlineTugas}
                                             onPress={getFiles}
                                             mt="lg"
                                             w="100%"

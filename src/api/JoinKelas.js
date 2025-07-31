@@ -29,7 +29,7 @@ const JoinKelas = async (token, refreshToken,body) => {
         userObj.token = newAccessToken;
         await AsyncStorage.setItem('acounts',JSON.stringify(userObj))
 
-        const retryResponse = await axios.get(`${url}join`, body,{
+        const retryResponse = await axios.post(`${url}join`, body,{
           headers: {
             Authorization: `Bearer ${newAccessToken}`,
           },

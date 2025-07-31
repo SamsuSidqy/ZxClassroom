@@ -2,15 +2,19 @@ import React from "react";
 import { ScrollView } from "react-native";
 import { Div, Avatar, Text } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
-
+import url from '../api/Endpoint'
 export default function PeopleClassComponent({ data }) {
   const teachers = data.filter(person => person.teacher);
   const students = data.filter(person => !person.teacher);
 
   const renderPerson = (person, index) => (
     <Div key={index} row justifyContent="flex-start" gap={10} alignItems="center">
-      <Avatar bg="green800">
-        <Icon name="dashboard" />
+      <Avatar
+      source={
+        person?.profile ? {uri:`${url}profile/${person.profile}`}:
+        {uri:`https://ui-avatars.com/api/?name=${person.username}`}
+      }
+      >
       </Avatar>
       <Text fontSize={15}>{person.username}</Text>
     </Div>

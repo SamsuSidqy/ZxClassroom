@@ -19,6 +19,7 @@ import UpdateKelas from '../api/UpdateKelas'
 import DetailKelas from '../api/DetailKelas'
 import UpdateUsers from '../api/UpdateProfile'
 import ListPesan from '../api/PesanList'
+import NilaiAsigsment from '../api/NilaiSiswa'
 
 function AuthProvider({ children }) {
 
@@ -268,6 +269,18 @@ function AuthProvider({ children }) {
             console.log(er)
         }
     }
+
+    const NilaiTugasSiswa = async(body) => {
+        try{
+            const storedUser = await AsyncStorage.getItem('acounts');
+            const userObj = storedUser ? JSON.parse(storedUser) : {};
+            const result = await NilaiAsigsment(userObj.token,userObj.refresh_token,body)           
+            return result
+        }catch(er){
+            console.log(er)
+            return false
+        }
+    }
     
 
     useEffect(() => {
@@ -299,7 +312,8 @@ function AuthProvider({ children }) {
                 KelasUpdate,
                 KelasDetail,
                 UpdateProfile,
-                PesanList
+                PesanList,
+                NilaiTugasSiswa
             }}
         >
             {children}

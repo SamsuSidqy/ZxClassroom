@@ -162,7 +162,8 @@ export default function ForumScreens({route}) {
                 				{/*Pengrim*/}
 			                    <Div px={15} py={20} row>
 			                        <Avatar 
-			                        source={item.profile ? null :{ uri: `https://ui-avatars.com/api/?name=${item.username}` }} 
+			                        source={item.profile ? {uri:`${url}profile/${item.profile}`} :
+			                        { uri: `https://ui-avatars.com/api/?name=${item.username}` }} 
 			                        size={30} bg="gray200" mr={10} />
 
 			                        <Div bg="#f1f1f1" p={12} rounded="lg" w="75%">
@@ -220,7 +221,8 @@ export default function ForumScreens({route}) {
 			                        </Div>
 
 			                        {/* Gambar profil pengirim */}
-			                        <Avatar source={account.profile ? {uri:`${url}profile/${account.profile}`} :{ uri: "https://ui-avatars.com/api/?name=Saya" }} size={30} bg="gray200" ml={10} />
+			                        <Avatar source={account.profile ? {uri:`${url}profile/${account.profile}`} :
+			                        { uri: `https://ui-avatars.com/api/?name=${account.username}` }} size={30} bg="gray200" ml={10} />
 			                    </Div>
                 				</>
                 			)
