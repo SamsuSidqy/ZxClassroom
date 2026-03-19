@@ -3,6 +3,8 @@ import { ScrollView, TouchableOpacity } from "react-native";
 import { Div, Button, Text } from "react-native-magnus";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
+import prediksiPrioritasTugas from '../utils/Algoritma/randomForest'
+import deadlineTugas from '../utils/Tools/HitungDeadline'
 
 export default function TaskClassComponent({data,kelas,teacher}){
 	const nav = useNavigation();
@@ -67,7 +69,9 @@ export default function TaskClassComponent({data,kelas,teacher}){
 	           style={{
 	            paddingVertical:5
 	           }}
-	           onPress={() => nav.navigate(teacher ? 'MyAssigsment': 'Assigsment',{task,kelas})}>
+	           onPress={() => console.log(task)}
+	         	>
+	           {/*// onPress={() => nav.navigate(teacher ? 'MyAssigsment': 'Assigsment',{task,kelas})}>*/}
 	          <Div
 	            key={index}
 	            bg="white"
@@ -77,7 +81,12 @@ export default function TaskClassComponent({data,kelas,teacher}){
 	            rounded="md"
 	            shadow="sm"
 	          >
-	            <Div row alignItems="center">
+	            <Div position="absolute" right={0} marginRight={10}>
+	            	<Text fontSize={35}
+	            		color={prediksiPrioritasTugas([task.jumlah_lampiran,task.deskripsi.length,deadlineTugas(task.tenggat_waktu)])}
+	            	>•</Text>
+	            </Div>
+	            <Div row alignItems="center" >
 	              <Icon
 	                name={task.type == "Tugas" ?"note-alt" : "campaign"}
 	                fontFamily="Feather"
@@ -87,7 +96,7 @@ export default function TaskClassComponent({data,kelas,teacher}){
 	              />
 	              <Div>
 	                <Text fontWeight="bold">{task.judul}</Text>
-	                <Text color="gray600">{task.tenggat_waktu ? FormatTenggat(task.tenggat_waktu) : "Tidak Ada Tenggat Waktu"}</Text>
+	                <Text color="gray600">{task.tenggat_waktu ? `Dadline Pengumupulan ${deadlineTugas(task.tenggat_waktu)} Hari` : "Tidak Ada Tenggat Waktu"}</Text>
 	                {/*<Text color="blue500" mt="sm">
 	                  Tambahkan komentar kelas
 	                </Text>*/}

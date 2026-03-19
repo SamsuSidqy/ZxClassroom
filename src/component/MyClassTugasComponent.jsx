@@ -108,7 +108,7 @@ export default function MyClassTugasComponent({data}) {
                 },
             };
 
-            console.log("Downloading from:", fileUrl);
+           console.log("Downloading from:", fileUrl);
            const task = config(options)
             .fetch("GET", fileUrl)
             .progress({ count: 10 }, (received, total) => {
