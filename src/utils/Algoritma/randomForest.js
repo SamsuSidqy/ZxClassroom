@@ -1,19 +1,78 @@
-// Dataset contoh: [lampiran, panjangDeskripsi, hariDeadline]
 const data = [
-  [0, 10, 30],
-  [1, 50, 5],
-  [2, 80, 1],
-  [0, 15, 20],
-  [3, 100, 2],
-  [1, 40, 15],
-  [0, 30, 10],
-  [2, 60, 7],
-  [1, 20, 25],
-  [0, 5, 35],
+  // 🔴 Tinggi (deadline 0–1) — 20 sampel
+  [0,10,0],
+  [1,20,1],
+  [2,30,0],
+  [3,45,1],
+  [4,15,0],
+  [2,40,1],
+  [0,25,0],
+  [1,35,1],
+  [3,12,0],
+  [4,48,1],
+  [0,5,0],
+  [2,22,0],
+  [1,38,1],
+  [3,18,1],
+  [4,42,0],
+  [0,30,1],
+  [1,8,0],
+  [2,47,1],
+  [3,28,0],
+  [4,33,1],
+
+  // 🟡 Warning (deadline 2–3) — 20 sampel
+  [0,10,2],
+  [1,25,3],
+  [2,35,2],
+  [3,40,3],
+  [4,15,2],
+  [2,45,3],
+  [0,20,2],
+  [1,55,3],
+  [3,30,2],
+  [4,60,3],
+  [0,50,3],
+  [2,70,2],
+  [1,65,3],
+  [3,75,2],
+  [4,80,3],
+  [0,38,2],
+  [2,42,3],
+  [1,28,2],
+  [3,58,3],
+  [4,22,2],
+
+  // 🟢 Rendah (deadline > 3) — 20 sampel
+  [0,10,5],
+  [1,60,7],
+  [2,80,10],
+  [3,30,14],
+  [4,100,20],
+  [0,5,30],
+  [2,45,6],
+  [1,70,8],
+  [3,90,12],
+  [4,55,9],
+  [0,120,15],
+  [2,200,25],
+  [1,85,11],
+  [3,40,18],
+  [4,150,7],
+  [0,65,5],
+  [2,110,22],
+  [1,95,16],
+  [3,75,13],
+  [4,180,30],
 ];
 
-// Label prioritas: 0 = Rendah, 1 = Sedang, 2 = Tinggi
-const labels = [0, 2, 2, 0, 2, 1, 0, 2, 1, 0];
+// Label: 0 = Rendah, 1 = Warning, 2 = Tinggi
+const labels = [
+  ...Array(20).fill(2), // Tinggi
+  ...Array(20).fill(1), // Warning
+  ...Array(20).fill(0), // Rendah
+];
+
 
 // Fungsi untuk menghitung entropi dari array label y
 function entropy(arr) {
@@ -196,12 +255,13 @@ const prediksiPrioritas = predictForest(forest, tugasBaru);
 
 export default function prediksiPrioritasTugas(tugasBaru){
   const check =  predictForest(forest,tugasBaru);
+  console.log(tugasBaru)
   if (check === 1) {
     // Warning
-    return 'red500';
+    return 'yellow400';
   }else if(check === 2){
     // Tinggi
-    return 'yellow400';
+    return 'red500';
   }else{
     // Hijau
     return 'green400';
